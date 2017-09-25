@@ -1,14 +1,14 @@
-# solr_exporter
+# solr-exporter
 
 [Prometheus](https://prometheus.io) exporter for [Apache Solr](http://lucene.apache.org/solr/), written in Java.
 
 
-## Installing solr_exporter
+## Installing solr-exporter
 
-solr_exporter is available from the release page at [https://github.com/mosuka/solr_exporter/releases](https://github.com/mosuka/solr_exporter/releases).  
-For all platform, download the `solr_exporter-<VERSION>.zip` file.  
-When getting started, all you need to do is extract the solr_exporter distribution archive to a directory of your choosing.  
-To keep things simple for now, extract the solr_exporter distribution archive to your local home directory, for instance on Linux, do:
+solr-exporter is available from the release page at [https://github.com/mosuka/solr-exporter/releases](https://github.com/mosuka/solr-exporter/releases).  
+For all platform, download the `solr-exporter-<VERSION>.zip` file.  
+When getting started, all you need to do is extract the solr-exporter distribution archive to a directory of your choosing.  
+To keep things simple for now, extract the solr-exporter distribution archive to your local home directory, for instance on Linux, do:
 
 ```
 $ cd ~/
@@ -57,17 +57,17 @@ $ $ tree solr-exporter-0.1.0
   4 directories, 34 files
 ```
 
-Once extracted, you are now ready to run solr_exporter using the instructions provided in the Running solr_exporter section.
+Once extracted, you are now ready to run solr-exporter using the instructions provided in the Running solr-exporter section.
 
-## Running solr_exporter
+## Running solr-exporter
 
-You can start solr_exporter by running `./bin/solr_exporter` from the solr_exporter directory.
+You can start solr-exporter by running `./bin/solr-exporter` from the solr-exporter directory.
 
 ```
 $ ./bin/solr-exporter -p 9983 -c ./conf/config.yml
 ```
 
-If you are on Windows platform, you can start solr_exporter by running `.\bin\solr_exporter.bat` instead.
+If you are on Windows platform, you can start solr-exporter by running `.\bin\-.bat` instead.
 
 ```
 > .\bin\solr-exporter.bat -p 9983 -c .\conf\config.yml
@@ -75,7 +75,7 @@ If you are on Windows platform, you can start solr_exporter by running `.\bin\so
 
 ## Building from source
 
-If you want to build solr_exporter from source, check-out the source using `git`.
+If you want to build solr-exporter from source, check-out the source using `git`.
 Binaries are created in the `target` directory.
 
 ```
