@@ -16,12 +16,8 @@
  */
 package com.github.mosuka.solr.prometheus.scraper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mosuka.solr.prometheus.collector.SolrCollector;
-import com.github.wnameless.json.flattener.FlattenMode;
-import com.github.wnameless.json.flattener.JsonFlattener;
 import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.PathNotFoundException;
 import io.prometheus.client.Collector;
 import io.prometheus.client.GaugeMetricFamily;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -78,8 +74,7 @@ public class CoreAdminAPIStatusScraper {
 
                     response.put("baseUrl", httpSolrClient.getBaseURL());
                     response.put("core", core);
-                    response.put("responseHeader", JsonPath.read((String) coreAdminResponse.get("response"), "$.responseHeader"));
-                    response.put("status", JsonPath.read((String) coreAdminResponse.get("response"), "$.status"));
+                    response.put("response", JsonPath.read((String) coreAdminResponse.get("response"), "$"));
                 } catch (SolrServerException | IOException e) {
                     logger.error("Get status failed: " + e.toString());
                 } finally {
@@ -88,7 +83,6 @@ public class CoreAdminAPIStatusScraper {
             }
         }
 
-        ObjectMapper mapper = new ObjectMapper();
         Map<String, GaugeMetricFamily> gaugeMetricFamilies = new LinkedHashMap<>();
 
         try {
@@ -96,36 +90,40 @@ public class CoreAdminAPIStatusScraper {
                 String baseUrl = (String) response.get("baseUrl");
                 String core = (String) response.get("core");
 
-                String metricNamePrefix = "solr.CoreAdminAPI_STATUS";
-                String help = "See following URL: https://lucene.apache.org/solr/guide/6_6/coreadmin-api.html#CoreAdminAPI-STATUSl";
-                List<String> labelName = Arrays.asList("baseUrl", "core");
-                List<String> labelValue = Arrays.asList(baseUrl, core);
+                String metricNamePrefix = "solr.CoreAdminAPI.STATUS";
 
-                Map<String, Object> status = JsonPath.read(response.get("status"), "$." + core);
-                Map<String,Object> flattenData = new JsonFlattener(mapper.writeValueAsString(status)).withFlattenMode(FlattenMode.NORMAL).flattenAsMap();
-                for (String key : flattenData.keySet()) {
-                    Object value = flattenData.get(key);
+                Map<String, Object> flattenResponse = SolrCollector.flatten((Map<String, Object>) ((Map<String, Object>) response.get("response")).get("status"), "|");
+                for (String flattenKey : flattenResponse.keySet()) {
+                    logger.debug("flattenKey: " + flattenKey);
 
-                    String metricName = SolrCollector.safeName(String.join("_", metricNamePrefix, key));
+                    Object value = flattenResponse.get(flattenKey);
+
+                    // remove core name from metricName
+                    String metricName = SolrCollector.safeName(String.join("_", metricNamePrefix, flattenKey.replaceFirst(core + "\\|", "|")));
+                    String help = "See following URL: https://lucene.apache.org/solr/guide/6_6/coreadmin-api.html#CoreAdminAPI-STATUS";
+                    List<String> labelName = Arrays.asList("baseUrl", "core");
+                    List<String> labelValue = Arrays.asList(baseUrl, core);
+                    Double metricValue = null;
+                    if (value instanceof Number) {
+                        metricValue = ((Number) value).doubleValue();
+                    } else {
+                        logger.debug("non Number object: " + flattenKey + " = " + value.toString());
+                    }
+
+                    if (metricValue == null) {
+                        continue;
+                    }
+
                     if (!gaugeMetricFamilies.containsKey(metricName)) {
                         GaugeMetricFamily gauge = new GaugeMetricFamily(
                                 metricName,
                                 help,
                                 labelName);
                         gaugeMetricFamilies.put(metricName, gauge);
+                        logger.debug("Create metric family: " + gauge.toString());
                     }
-
-                    if (value instanceof Number) {
-                        try {
-                            Double metricValue = ((Number) value).doubleValue();
-                            gaugeMetricFamilies.get(metricName).addMetric(labelValue, metricValue);
-                        } catch (PathNotFoundException e) {
-                            logger.warn("Get leader state failed: " + e.toString());
-                        }
-                    } else {
-                        logger.debug("Non numerical value: " + value);
-                        continue;
-                    }
+                    gaugeMetricFamilies.get(metricName).addMetric(labelValue, metricValue);
+                    logger.debug("Add metric: " + gaugeMetricFamilies.get(metricName).toString());
                 }
             }
         } catch (Exception e) {

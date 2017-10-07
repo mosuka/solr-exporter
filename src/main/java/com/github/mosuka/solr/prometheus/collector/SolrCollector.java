@@ -302,4 +302,69 @@ public class SolrCollector extends Collector implements Collector.Describable {
         String newName = startsUnderscores.matcher(endsUnderscores.matcher(multipleUnderscores.matcher(unsafeChars.matcher(name).replaceAll("_")).replaceAll("_")).replaceAll("")).replaceAll("");
         return newName;
     }
+
+    /**
+     *
+     * @param map
+     * @return
+     */
+    public static Map<String, Object> flatten(Map<String, Object> map) {
+        return flatten(map, ".");
+    }
+
+    /**
+     *
+     * @param map
+     * @param delimiter
+     * @return
+     */
+    public static Map<String, Object> flatten(Map<String, Object> map, String delimiter) {
+        Map<String, Object> flattenMap = new LinkedHashMap<>();
+
+        readObj(map, flattenMap, delimiter);
+
+        return flattenMap;
+    }
+
+    /**
+     *
+     * @param obj
+     * @param flattenMap
+     * @param delimiter
+     */
+    private static void readObj(Object obj, Map<String, Object> flattenMap, String delimiter) {
+        readObj(obj, flattenMap, delimiter, new Stack<>());
+    }
+
+    /**
+     *
+     * @param obj
+     * @param flattenMap
+     * @param delimiter
+     * @param stack
+     */
+    private static void readObj(Object obj, Map<String, Object> flattenMap, String delimiter, Stack<String> stack) {
+        try {
+            if (obj instanceof Map) {
+                for (Object key : ((Map) obj).keySet()) {
+                    stack.push(key.toString());
+                    readObj(((Map) obj).get(key), flattenMap, delimiter, stack);
+                }
+            } else if (obj instanceof List) {
+                for (int i = 0; ((List) obj).size() > i; i++) {
+                    Object key = String.valueOf(i);
+                    stack.push(key.toString());
+                    readObj(key, flattenMap, delimiter, stack);
+                }
+            } else {
+                String key = String.join(delimiter, stack.toArray(new String[0]));
+                flattenMap.put(key, obj);
+            }
+            if (!stack.isEmpty()) {
+                stack.pop();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

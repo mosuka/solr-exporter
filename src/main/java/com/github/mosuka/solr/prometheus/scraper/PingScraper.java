@@ -18,7 +18,6 @@ package com.github.mosuka.solr.prometheus.scraper;
 
 import com.github.mosuka.solr.prometheus.collector.SolrCollector;
 import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.PathNotFoundException;
 import io.prometheus.client.Collector;
 import io.prometheus.client.GaugeMetricFamily;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -69,8 +68,7 @@ public class PingScraper {
 
                     response.put("baseUrl", httpSolrClient.getBaseURL());
                     response.put("core", core);
-                    response.put("responseHeader", JsonPath.read((String) pingResponse.get("response"), "$.responseHeader"));
-                    response.put("status", JsonPath.read((String) pingResponse.get("response"), "$.status"));
+                    response.put("response", JsonPath.read((String) pingResponse.get("response"), "$"));
                 } catch (SolrServerException | IOException e) {
                     logger.error("Get ping failed: " + e.toString());
                 } finally {
@@ -87,25 +85,25 @@ public class PingScraper {
                 String core = (String) response.get("core");
 
                 String metricNamePrefix = "solr.ping";
-                String help = "The ping status (OK : 1.0, Other : 0.0). See following URL: https://lucene.apache.org/solr/guide/6_6/ping.html";
-                List<String> labelName = Arrays.asList("baseUrl", "core");
-                List<String> labelValue = Arrays.asList(baseUrl, core);
+
+                String statusStr = (String) ((Map<String, Object>) response.get("response")).get("status");
 
                 String metricName = SolrCollector.safeName(String.join("_", metricNamePrefix, "status"));
+                String help = "See following URL: https://lucene.apache.org/solr/guide/6_6/ping.html";
+                List<String> labelName = Arrays.asList("baseUrl", "core");
+                List<String> labelValue = Arrays.asList(baseUrl, core);
+                Double metricValue = statusStr.equals("OK") ? 1.0 : 0.0;
+
                 if (!gaugeMetricFamilies.containsKey(metricName)) {
                     GaugeMetricFamily gauge = new GaugeMetricFamily(
                             metricName,
                             help,
                             labelName);
                     gaugeMetricFamilies.put(metricName, gauge);
+                    logger.debug("Create metric family: " + gauge.toString());
                 }
-
-                try {
-                    Double metricValue = response.get("status").equals("OK") ? 1.0 : 0.0;
-                    gaugeMetricFamilies.get(metricName).addMetric(labelValue, metricValue);
-                } catch (PathNotFoundException e) {
-                    logger.warn("Get leader state failed: " + e.toString());
-                }
+                gaugeMetricFamilies.get(metricName).addMetric(labelValue, metricValue);
+                logger.debug("Add metric: " + gaugeMetricFamilies.get(metricName).toString());
             }
         } catch (Exception e) {
             logger.error("Collect failed: " + e.toString());

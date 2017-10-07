@@ -17,7 +17,7 @@ znode: "/solr"
 # https://lucene.apache.org/solr/guide/6_6/cores-api.html#CollectionsAPI-overseerstatus
 #
 collectionsAPIOverseerStatus:
-  enable: true
+  enable: false
 
 
 #
@@ -25,7 +25,7 @@ collectionsAPIOverseerStatus:
 # https://lucene.apache.org/solr/guide/6_6/cores-api.html#CollectionsAPI-clusterstatus
 #
 collectionsAPIClusterStatus:
-  enable: true
+  enable: false
 #  collections:
 #    - collection1
 #    - collection2
@@ -37,7 +37,7 @@ collectionsAPIClusterStatus:
 # https://lucene.apache.org/solr/guide/6_6/ping.html
 #
 ping:
-  enable: true
+  enable: false
 #  cores:
 #    - collection1
 #    - collection2
@@ -49,7 +49,7 @@ ping:
 # https://lucene.apache.org/solr/guide/6_6/coreadmin-api.html#CoreAdminAPI-STATUS
 #
 coreAdminAPIStatus:
-  enable: true
+  enable: false
 #  cores:
 #    - collection1
 #    - collection2
@@ -61,7 +61,7 @@ coreAdminAPIStatus:
 # https://lucene.apache.org/solr/guide/6_6/mbean-request-handler.html
 #
 mBeanRequestHandler:
-  enable: true
+  enable: false
 #  cores:
 #    - collection1
 #    - collection2
@@ -72,16 +72,22 @@ mBeanRequestHandler:
 
 #
 # Metrics Reporting
-# https://lucene.apache.org/solr/guide/6_6/metricsReporting-reporting.html
+# https://lucene.apache.org/solr/guide/6_6/metrics-reporting.html
 #
 metricsReporting:
   enable: true
-#  group:
+  group:
 #    - jvm
 #    - node
-#  type:
-#    - counter
-#    - gauge
+    - core
+#    - http
+#    - jetty
+  type:
+    - counter
+    - gauge
+    - histogram
+    - meter
+    - timer
 #  prefix:
 #    - ADMIN
 #    - QUERY
@@ -91,7 +97,7 @@ metricsReporting:
 # Facet Requests
 #
 facet:
-  enable: true
+  enable: false
   queries:
     - collection: collection1
       path: /select
