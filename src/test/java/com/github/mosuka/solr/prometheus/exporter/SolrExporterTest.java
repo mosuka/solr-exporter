@@ -56,9 +56,9 @@ public class SolrExporterTest extends SolrExporterTestBase {
         String configFile = "src/test/files/conf/config.yml";
 
         Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
-        config.setBaseUrl(baseUrl);
-        config.setZkHosts(new ArrayList<>());
-        config.setZnode("");
+//        config.setBaseUrl(baseUrl);
+//        config.setZkHosts(new ArrayList<>());
+//        config.setZnode("");
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
@@ -104,9 +104,9 @@ public class SolrExporterTest extends SolrExporterTestBase {
         String configFile = "src/test/files/conf/config.yml";
 
         Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
-        config.setBaseUrl("");
-        config.setZkHosts(zkHosts);
-        config.setZnode("/solr");
+//        config.setBaseUrl("");
+//        config.setZkHosts(zkHosts);
+//        config.setZnode("/solr");
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();

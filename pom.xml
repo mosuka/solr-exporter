@@ -144,7 +144,7 @@
     <dependency>
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-solrj</artifactId>
-      <version>6.6.1</version>
+      <version>7.1.0</version>
     </dependency>
 
     <dependency>
@@ -178,6 +178,12 @@
     </dependency>
 
     <dependency>
+      <groupId>net.thisptr</groupId>
+      <artifactId>jackson-jq</artifactId>
+      <version>0.0.8</version>
+    </dependency>
+
+    <dependency>
       <groupId>net.sourceforge.argparse4j</groupId>
       <artifactId>argparse4j</artifactId>
       <version>0.7.0</version>
@@ -205,7 +211,7 @@
     <dependency>
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-test-framework</artifactId>
-      <version>6.6.1</version>
+      <version>7.1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

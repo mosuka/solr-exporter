@@ -242,22 +242,22 @@ facet:
 | baseUrl | Solr base url. Specify this when connecting to Solr in standalone mode. |
 | zkHosts | ZooKeeper ensemble. Specify this when connecting to a Solr cluster in SolrCloud mode. |
 | znode | znode on Zookeeper. Specify this when connecting to a Solr cluster in SolrCloud mode. |
-| collectionsAPIOverseerStatus.enable | Use Solr's Collections API to collect Overseer status as metrics. It is enabled only when connected to Solr in SolrCloud mode. |
-| collectionsAPIClusterStatus.enable | Use Solr's Collections API to collect Cluster status as metrics. It is enabled only when connected to Solr in SolrCloud mode. |
+| collectionsAPIOverseerStatus.enable | Use Solr's Collections API to collect Overseer status as jsonQueries. It is enabled only when connected to Solr in SolrCloud mode. |
+| collectionsAPIClusterStatus.enable | Use Solr's Collections API to collect Cluster status as jsonQueries. It is enabled only when connected to Solr in SolrCloud mode. |
 | collectionsAPIClusterStatus.collections | Specify specific collections. If omitted, all collections in the cluster are targeted. |
-| ping.enable | Use Solr's Ping to collect status as metrics. |
+| ping.enable | Use Solr's Ping to collect status as jsonQueries. |
 | ping.cores | Specify specific cores. If omitted, all cores in the solr node are targeted. |
-| coreAdminAPIStatus.enable | Use Solr's CoreAdminAPI to collect status as metrics. |
+| coreAdminAPIStatus.enable | Use Solr's CoreAdminAPI to collect status as jsonQueries. |
 | coreAdminAPIStatus.cores | Specify specific cores. If omitted, all cores in the solr node are targeted. |
-| mBeanRequestHandler.enable | Use Solr's MBean Request Handler to collect stats as metrics. |
+| mBeanRequestHandler.enable | Use Solr's MBean Request Handler to collect stats as jsonQueries. |
 | mBeanRequestHandler.cores | Specify specific cores. If omitted, all cores in the solr node are targeted. |
 | mBeanRequestHandler.cat | Restricts results by category name. |
 | mBeanRequestHandler.key | Restricts results by object key. |
-| metricsReporting.enable | Use Solr's Metrics Reporting to collect metrics. |
-| metricsReporting.groups | The metric group to retrieve. The default is all to retrieve all metrics for all groups. |
+| metricsReporting.enable | Use Solr's Metrics Reporting to collect jsonQueries. |
+| metricsReporting.groups | The metric group to retrieve. The default is all to retrieve all jsonQueries for all groups. |
 | metricsReporting.types | The type of metric to retrieve. The default is all to retrieve all metric types. |
-| metricsReporting.prefixes | The first characters of metric name that will filter the metrics. |
-| facet.enable | Use Solr's Faceting to collect facet counts as metrics. |
+| metricsReporting.prefixes | The first characters of metric name that will filter the jsonQueries. |
+| facet.enable | Use Solr's Faceting to collect facet counts as jsonQueries. |
 | facet.queries | Specify the facet queries. |
 | facet.queries.collection | Specify target collection. |
 | facet.queries.path | Specify Solr's path. |

@@ -79,47 +79,48 @@ public class SolrCollector extends Collector implements Collector.Describable {
 
         List<MetricFamilySamples> metricFamilies = new ArrayList<>();
 
-        if (this.solrClient instanceof CloudSolrClient) {
-            // collect overseer status via CollectionsAPI
-            if (config.getCollectionsAPIOverseerStatus().getEnable()) {
-                CollectionsAPIOverseerStatusScraper collectionsAPIOverseerStatusScraper = new CollectionsAPIOverseerStatusScraper();
-                metricFamilies.addAll(collectionsAPIOverseerStatusScraper.scrape((CloudSolrClient) this.solrClient));
-            }
 
-            // cluster status via CollectionsAPI
-            if (config.getCollectionsAPIClusterStatus().getEnable()) {
-                CollectionsAPIClusterStatusScraper collectionsAPIClusterStatusScraper = new CollectionsAPIClusterStatusScraper();
-                metricFamilies.addAll(collectionsAPIClusterStatusScraper.scrape((CloudSolrClient) this.solrClient, config.getCollectionsAPIClusterStatus().getCollections()));
-            }
+        if (this.solrClient instanceof CloudSolrClient) {
+//            // collect overseer status via CollectionsAPI
+//            if (config.getCollectionsAPIOverseerStatus().getEnable()) {
+//                CollectionsAPIOverseerStatusScraper collectionsAPIOverseerStatusScraper = new CollectionsAPIOverseerStatusScraper();
+//                metricFamilies.addAll(collectionsAPIOverseerStatusScraper.scrape((CloudSolrClient) this.solrClient));
+//            }
+//
+//            // cluster status via CollectionsAPI
+//            if (config.getCollectionsAPIClusterStatus().getEnable()) {
+//                CollectionsAPIClusterStatusScraper collectionsAPIClusterStatusScraper = new CollectionsAPIClusterStatusScraper();
+//                metricFamilies.addAll(collectionsAPIClusterStatusScraper.scrape((CloudSolrClient) this.solrClient, config.getCollectionsAPIClusterStatus().getCollections()));
+//            }
 
             // create target base urls
             List<HttpSolrClient> httpSolrClients = new ArrayList<>();
             try {
                 httpSolrClients = getHttpSolrClients((CloudSolrClient) this.solrClient);
 
-                // collect ping status via Ping
-                if (config.getPing().getEnable()) {
-                    PingScraper pingScraper = new PingScraper();
-                    metricFamilies.addAll(pingScraper.scrape(httpSolrClients, config.getPing().getCores()));
-                }
-
-                // collect cores status via CoreAdminAPI
-                if (config.getCoreAdminAPIStatus().getEnable()) {
-                    CoreAdminAPIStatusScraper coreAdminStatusCollector = new CoreAdminAPIStatusScraper();
-                    metricFamilies.addAll(coreAdminStatusCollector.scrape(httpSolrClients, config.getCoreAdminAPIStatus().getCores()));
-                }
-
-                // collect MBean stats via MBean Query Handler
-                if (config.getmBeanRequestHandler().getEnable()) {
-                    MBeanRequestHandlerScraper mBeanRequestHandlerScraper = new MBeanRequestHandlerScraper();
-                    metricFamilies.addAll(mBeanRequestHandlerScraper.scrape(httpSolrClients, config.getmBeanRequestHandler().getCores(), config.getmBeanRequestHandler().getCat(), config.getmBeanRequestHandler().getKey()));
-                }
-
-                // collect metrics via MetricsReporting Reporting
-                if (config.getMetricsReporting().getEnable()) {
-                    MetricsReportingScraper metricsReportingScraper = new MetricsReportingScraper();
-                    metricFamilies.addAll(metricsReportingScraper.scrape(httpSolrClients, config.getMetricsReporting().getGroup(),config.getMetricsReporting().getType(),config.getMetricsReporting().getPrefix()));
-                }
+//                // collect ping status via Ping
+//                if (config.getPing().getEnable()) {
+//                    PingScraper pingScraper = new PingScraper();
+//                    metricFamilies.addAll(pingScraper.scrape(httpSolrClients, config.getPing().getCores()));
+//                }
+//
+//                // collect cores status via CoreAdminAPI
+//                if (config.getCoreAdminAPIStatus().getEnable()) {
+//                    CoreAdminAPIStatusScraper coreAdminStatusCollector = new CoreAdminAPIStatusScraper();
+//                    metricFamilies.addAll(coreAdminStatusCollector.scrape(httpSolrClients, config.getCoreAdminAPIStatus().getCores()));
+//                }
+//
+//                // collect MBean stats via MBean Query Handler
+//                if (config.getmBeanRequestHandler().getEnable()) {
+//                    MBeanRequestHandlerScraper mBeanRequestHandlerScraper = new MBeanRequestHandlerScraper();
+//                    metricFamilies.addAll(mBeanRequestHandlerScraper.scrape(httpSolrClients, config.getmBeanRequestHandler().getCores(), config.getmBeanRequestHandler().getCat(), config.getmBeanRequestHandler().getKey()));
+//                }
+//
+//                // collect metrics via MetricsReporting Reporting
+//                if (config.getMetricsReporting().getEnable()) {
+//                    MetricsReportingScraper metricsReportingScraper = new MetricsReportingScraper();
+//                    metricFamilies.addAll(metricsReportingScraper.scrape(httpSolrClients, config.getMetricsReporting().getGroup(),config.getMetricsReporting().getType(),config.getMetricsReporting().getPrefix()));
+//                }
 
             } catch (SolrServerException | IOException e) {
                 logger.error("Get base urls failed: " + e.toString());
@@ -133,37 +134,40 @@ public class SolrCollector extends Collector implements Collector.Describable {
                 }
             }
         } else {
-            // collect ping status via Ping
-            if (config.getPing().getEnable()) {
-                PingScraper pingScraper = new PingScraper();
-                metricFamilies.addAll(pingScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getPing().getCores()));
-            }
-
-            // collect cores status via CoreAdminAPI
-            if (config.getCoreAdminAPIStatus().getEnable()) {
-                CoreAdminAPIStatusScraper coreAdminStatusCollector = new CoreAdminAPIStatusScraper();
-                metricFamilies.addAll(coreAdminStatusCollector.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getCoreAdminAPIStatus().getCores()));
-            }
-
-            // collect MBean stats via MBean Query Handler
-            if (config.getmBeanRequestHandler().getEnable()) {
-                MBeanRequestHandlerScraper mBeanRequestHandlerScraper = new MBeanRequestHandlerScraper();
-                metricFamilies.addAll(mBeanRequestHandlerScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getmBeanRequestHandler().getCores(), config.getmBeanRequestHandler().getCat(), config.getmBeanRequestHandler().getKey()));
-            }
-
-            // collect metrics via MetricsReporting Reporting
-            if (config.getMetricsReporting().getEnable()) {
-                MetricsReportingScraper metricsReportingScraper = new MetricsReportingScraper();
-                metricFamilies.addAll(metricsReportingScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getMetricsReporting().getGroup(),config.getMetricsReporting().getType(),config.getMetricsReporting().getPrefix()));
-            }
+//            // collect ping status via Ping
+//            if (config.getPing().getEnable()) {
+//                PingScraper pingScraper = new PingScraper();
+//                metricFamilies.addAll(pingScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getPing().getCores()));
+//            }
+//
+//            // collect cores status via CoreAdminAPI
+//            if (config.getCoreAdminAPIStatus().getEnable()) {
+//                CoreAdminAPIStatusScraper coreAdminStatusCollector = new CoreAdminAPIStatusScraper();
+//                metricFamilies.addAll(coreAdminStatusCollector.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getCoreAdminAPIStatus().getCores()));
+//            }
+//
+//            // collect MBean stats via MBean Query Handler
+//            if (config.getmBeanRequestHandler().getEnable()) {
+//                MBeanRequestHandlerScraper mBeanRequestHandlerScraper = new MBeanRequestHandlerScraper();
+//                metricFamilies.addAll(mBeanRequestHandlerScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getmBeanRequestHandler().getCores(), config.getmBeanRequestHandler().getCat(), config.getmBeanRequestHandler().getKey()));
+//            }
+//
+//            // collect metrics via MetricsReporting Reporting
+//            if (config.getMetricsReporting().getEnable()) {
+//                MetricsReportingScraper metricsReportingScraper = new MetricsReportingScraper();
+//                metricFamilies.addAll(metricsReportingScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getMetricsReporting().getGroup(),config.getMetricsReporting().getType(),config.getMetricsReporting().getPrefix()));
+//            }
 
         }
 
-        // facets
-        if (config.getFacet().getEnable()) {
-            FacetScraper facetScraper = new FacetScraper();
-            metricFamilies.addAll(facetScraper.collectFacet(this.solrClient, config.getFacet().getQueries()));
-        }
+        Scraper scraper = new Scraper();
+        metricFamilies.addAll(scraper.collectResponse(this.solrClient, config.getScraperConfigs()));
+
+//        // facets
+//        if (config.getFacet().getEnable()) {
+//            FacetScraper facetScraper = new FacetScraper();
+//            metricFamilies.addAll(facetScraper.collectFacet(this.solrClient, config.getFacet().getQueries()));
+//        }
 
         // duration
         List<MetricFamilySamples.Sample> durationSample = new ArrayList<>();

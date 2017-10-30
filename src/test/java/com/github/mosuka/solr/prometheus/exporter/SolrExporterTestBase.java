@@ -26,7 +26,7 @@ import org.junit.BeforeClass;
 public class SolrExporterTestBase extends SolrCloudTestCase {
     public static String COLLECTION = "collection1";
     public static String CONF_NAME = COLLECTION + "_config";
-    public static String CONF_DIR = "src/test/files/solr-6.6.1/server/solr/configsets/data_driven_schema_configs/conf";
+    public static String CONF_DIR = "src/test/files/solr/server/solr/configsets/_default/conf";
     public static int NUM_SHARDS = 2;
     public static int NUM_REPLICAS = 2;
     public static int MAX_SHARDS_PER_NODE = 1;

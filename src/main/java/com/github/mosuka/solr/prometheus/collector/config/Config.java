@@ -22,102 +22,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
-    private String baseUrl = "";
+//    private String baseUrl = "";
 
-    private List<String> zkHosts = new ArrayList<>();
-    private String znode = "";
+//    private List<String> zkHosts = new ArrayList<>();
+//    private String znode = "";
 
-    private Ping ping = new Ping();
+    private List<ScraperConfig> scraperConfigs = new ArrayList<>();
 
-    private CoreAdminAPIStatus coreAdminAPIStatus = new CoreAdminAPIStatus();
+//    public String getBaseUrl() {
+//        return baseUrl;
+//    }
 
-    private MBeanRequestHandler mBeanRequestHandler = new MBeanRequestHandler();
+//    public void setBaseUrl(String baseUrl) {
+//        this.baseUrl = baseUrl;
+//    }
 
-    private CollectionsAPIOverseerStatus collectionsAPIOverseerStatus = new CollectionsAPIOverseerStatus();
+//    public List<String> getZkHosts() {
+//        return zkHosts;
+//    }
 
-    private CollectionsAPIClusterStatus collectionsAPIClusterStatus = new CollectionsAPIClusterStatus();
+//    public void setZkHosts(List<String> zkHosts) {
+//        this.zkHosts = zkHosts;
+//    }
 
-    private MetricsReporting metricsReporting = new MetricsReporting();
+//    public String getZnode() {
+//        return znode;
+//    }
 
-    private Facet facet = new Facet();
+//    public void setZnode(String zkNode) {
+//        this.znode = zkNode;
+//    }
 
-    public String getBaseUrl() {
-        return baseUrl;
+    public List<ScraperConfig> getScraperConfigs() {
+        return scraperConfigs;
     }
 
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public List<String> getZkHosts() {
-        return zkHosts;
-    }
-
-    public void setZkHosts(List<String> zkHosts) {
-        this.zkHosts = zkHosts;
-    }
-
-    public String getZnode() {
-        return znode;
-    }
-
-    public void setZnode(String zkNode) {
-        this.znode = zkNode;
-    }
-
-    public Ping getPing() {
-        return ping;
-    }
-
-    public void setPing(Ping ping) {
-        this.ping = ping;
-    }
-
-    public CoreAdminAPIStatus getCoreAdminAPIStatus() {
-        return coreAdminAPIStatus;
-    }
-
-    public void setCoreAdminAPIStatus(CoreAdminAPIStatus coreAdminAPIStatus) {
-        this.coreAdminAPIStatus = coreAdminAPIStatus;
-    }
-
-    public MBeanRequestHandler getmBeanRequestHandler() {
-        return mBeanRequestHandler;
-    }
-
-    public void setmBeanRequestHandler(MBeanRequestHandler mBeanRequestHandler) {
-        this.mBeanRequestHandler = mBeanRequestHandler;
-    }
-
-    public CollectionsAPIOverseerStatus getCollectionsAPIOverseerStatus() {
-        return collectionsAPIOverseerStatus;
-    }
-
-    public void setCollectionsAPIOverseerStatus(CollectionsAPIOverseerStatus collectionsAPIOverseerStatus) {
-        this.collectionsAPIOverseerStatus = collectionsAPIOverseerStatus;
-    }
-
-    public CollectionsAPIClusterStatus getCollectionsAPIClusterStatus() {
-        return collectionsAPIClusterStatus;
-    }
-
-    public void setCollectionsAPIClusterStatus(CollectionsAPIClusterStatus collectionsAPIClusterStatus) {
-        this.collectionsAPIClusterStatus = collectionsAPIClusterStatus;
-    }
-
-    public MetricsReporting getMetricsReporting() {
-        return metricsReporting;
-    }
-
-    public void setMetricsReporting(MetricsReporting metricsReporting) {
-        this.metricsReporting = metricsReporting;
-    }
-
-    public Facet getFacet() {
-        return facet;
-    }
-
-    public void setFacet(Facet facet) {
-        this.facet = facet;
+    public void setScraperConfigs(List<ScraperConfig> scraperConfigs) {
+        this.scraperConfigs = scraperConfigs;
     }
 }

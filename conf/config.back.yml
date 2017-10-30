@@ -1,0 +1,111 @@
+#
+# Solr on standalone mode
+#
+baseUrl: "http://localhost:8983/solr"
+
+
+#
+# Solr on SolrCloud mode
+#
+#zkHosts:
+#  - "localhost:2181"
+#znode: "/solr"
+
+
+#
+# Ping
+# https://lucene.apache.org/solr/guide/6_6/ping.html
+#
+ping:
+  enable: false
+#  cores:
+#    - collection1
+#    - collection2
+#    - collection3
+
+
+#
+# CoreAdmin API STATUS
+# https://lucene.apache.org/solr/guide/6_6/coreadmin-api.html#CoreAdminAPI-STATUS
+#
+coreAdminAPIStatus:
+  enable: false
+#  cores:
+#    - collection1
+#    - collection2
+#    - collection3
+
+
+#
+# MBean Query Handler Stats
+# https://lucene.apache.org/solr/guide/6_6/mbean-request-handler.html
+#
+mBeanRequestHandler:
+  enable: false
+#  cores:
+#    - collection1
+#    - collection2
+#    - collection3
+#  cat: ADMIN
+#  key: /admin/mbeans
+
+
+#
+# Metrics Reporting
+# https://lucene.apache.org/solr/guide/6_6/jsonQueries-reporting.html
+#
+metricsReporting:
+  enable: true
+  group:
+#    - jvm
+#    - node
+    - core
+#    - http
+#    - jetty
+  type:
+    - counter
+    - gauge
+    - histogram
+    - meter
+    - timer
+#  prefix:
+#    - ADMIN
+#    - QUERY
+
+
+
+
+
+#
+# Facet Requests
+#
+facet:
+  enable: false
+  queries:
+    - collection: collection1
+      path: /select
+      params:
+        - q: "*:*"
+        - facet: "on"
+        - facet.field: "cat"
+
+#
+# Collections API OVERSEERSTATUS
+# https://lucene.apache.org/solr/guide/6_6/cores-api.html#CollectionsAPI-overseerstatus
+#
+collectionsAPIOverseerStatus:
+  enable: false
+
+
+#
+# Collections API CLUSTERSTATUS
+# https://lucene.apache.org/solr/guide/6_6/cores-api.html#CollectionsAPI-clusterstatus
+#
+collectionsAPIClusterStatus:
+  enable: false
+#  collections:
+#    - collection1
+#    - collection2
+#    - collection3
+
+

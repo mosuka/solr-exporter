@@ -59,12 +59,12 @@ public class SolrCollectorTest extends SolrExporterTestBase {
         String configFile = "src/test/files/conf/config.yml";
 
         Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
-        config.setZkHosts(zkHosts);
+//        config.setZkHosts(zkHosts);
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
 
-        File exampleDocsDir = new File("src/test/files/solr-6.6.1/example/exampledocs");
+        File exampleDocsDir = new File("src/test/files/solr/example/exampledocs");
         List<File> xmlFiles = Arrays.asList(exampleDocsDir.listFiles((dir, name) -> name.endsWith(".xml")));
 
         for (File xml : xmlFiles) {
