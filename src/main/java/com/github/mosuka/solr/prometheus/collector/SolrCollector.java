@@ -80,7 +80,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
     private Map<String, Collector.MetricFamilySamples> collectPing(SolrClient solrClient, ScrapeConfig pingConfig) {
         Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
-        Scraper scraper = new Scraper();
+        SolrScraper scraper = new SolrScraper();
 
         if (pingConfig.getQuery().getCollection() != null && !pingConfig.getQuery().getCollection().equals("")) {
             // collect specified collection/core
@@ -115,7 +115,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @return
      */
     private Map<String, Collector.MetricFamilySamples> collectMetrics(SolrClient solrClient, ScrapeConfig metricsConfig) {
-        Scraper scraper = new Scraper();
+        SolrScraper scraper = new SolrScraper();
 
         return scraper.collectResponse(solrClient, metricsConfig);
     }
@@ -127,7 +127,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @return
      */
     private Map<String, Collector.MetricFamilySamples> collectCollections(SolrClient solrClient, ScrapeConfig collectionsConfig) {
-        Scraper scraper = new Scraper();
+        SolrScraper scraper = new SolrScraper();
 
         return scraper.collectResponse(solrClient, collectionsConfig);
     }
@@ -139,7 +139,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @return
      */
     private Map<String, Collector.MetricFamilySamples> collectQueries(SolrClient solrClient, ScrapeConfig queryConfig) {
-        Scraper scraper = new Scraper();
+        SolrScraper scraper = new SolrScraper();
 
         return scraper.collectResponse(solrClient, queryConfig);
     }

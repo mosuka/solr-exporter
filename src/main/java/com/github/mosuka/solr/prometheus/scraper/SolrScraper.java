@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public class Scraper {
-    private static final Logger logger = LoggerFactory.getLogger(Scraper.class);
+public class SolrScraper {
+    private static final Logger logger = LoggerFactory.getLogger(SolrScraper.class);
 
     /**
      * Collect facet count.
