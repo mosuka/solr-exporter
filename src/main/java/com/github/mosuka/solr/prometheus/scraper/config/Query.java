@@ -18,7 +18,7 @@ package com.github.mosuka.solr.prometheus.scraper.config;
 
 import java.util.*;
 
-public class Query {
+public class Query implements Cloneable {
     private String collection = "";
     private String path = "";
     private List<LinkedHashMap<String, String>> params = new ArrayList<>();
@@ -65,5 +65,19 @@ public class Query {
         }
 
         return buffer.toString();
+    }
+
+    public Query clone() throws CloneNotSupportedException {
+        Query query = null;
+
+        try {
+            query = (Query) super.clone();
+            query.collection = this.collection;
+            query.params = new ArrayList<>(this.params);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return query;
     }
 }

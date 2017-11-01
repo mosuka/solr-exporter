@@ -16,7 +16,6 @@
  */
 package com.github.mosuka.solr.prometheus.scraper.config;
 
-import com.github.mosuka.solr.prometheus.scraper.config.Query;
 import junit.framework.TestCase;
 import org.junit.Test;
 

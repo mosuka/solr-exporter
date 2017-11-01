@@ -16,11 +16,12 @@
  */
 package com.github.mosuka.solr.prometheus.collector;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mosuka.solr.prometheus.collector.config.Config;
 import com.github.mosuka.solr.prometheus.scraper.*;
-import com.jayway.jsonpath.JsonPath;
+import com.github.mosuka.solr.prometheus.scraper.config.ScrapeConfig;
 import io.prometheus.client.Collector;
-import net.minidev.json.JSONArray;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -47,6 +48,8 @@ public class SolrCollector extends Collector implements Collector.Describable {
     private SolrClient solrClient;
     private Config config = new Config();
 
+    private static ObjectMapper om = new ObjectMapper();
+
     /**
      * Constructor.
      *
@@ -62,10 +65,83 @@ public class SolrCollector extends Collector implements Collector.Describable {
      *
      * @return
      */
-    public List<MetricFamilySamples> describe() {
-        List<MetricFamilySamples> metricFamilies = new ArrayList<>();
-        metricFamilies.add(new MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", new ArrayList<>()));
+    public List<Collector.MetricFamilySamples> describe() {
+        List<Collector.MetricFamilySamples> metricFamilies = new ArrayList<>();
+        metricFamilies.add(new Collector.MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", new ArrayList<>()));
         return metricFamilies;
+    }
+
+    /**
+     *
+     * @param solrClient
+     * @param pingConfig
+     * @return
+     */
+    private Map<String, Collector.MetricFamilySamples> collectPing(SolrClient solrClient, ScrapeConfig pingConfig) {
+        Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
+
+        Scraper scraper = new Scraper();
+
+        if (pingConfig.getQuery().getCollection() != null && !pingConfig.getQuery().getCollection().equals("")) {
+            // collect specified collection/core
+            metricFamilySamplesMap = scraper.collectResponse(solrClient, pingConfig);
+        } else {
+            // collect all collections/cores
+            try {
+                List<String> cores = getCores((HttpSolrClient) solrClient);
+
+                for (String core : cores) {
+                    try {
+                        // clone scrape config
+                        ScrapeConfig c = pingConfig.clone();
+                        c.getQuery().setCollection(core);
+                        mergeMetrics(metricFamilySamplesMap, scraper.collectResponse(solrClient, c));
+                    } catch (CloneNotSupportedException e) {
+                        logger.error(e.getMessage());
+                    }
+                }
+            } catch (SolrServerException | IOException e) {
+                logger.error(e.getMessage());
+            }
+        }
+
+        return metricFamilySamplesMap;
+    }
+
+    /**
+     *
+     * @param solrClient
+     * @param metricsConfig
+     * @return
+     */
+    private Map<String, Collector.MetricFamilySamples> collectMetrics(SolrClient solrClient, ScrapeConfig metricsConfig) {
+        Scraper scraper = new Scraper();
+
+        return scraper.collectResponse(solrClient, metricsConfig);
+    }
+
+    /**
+     *
+     * @param solrClient
+     * @param collectionsConfig
+     * @return
+     */
+    private Map<String, Collector.MetricFamilySamples> collectCollections(SolrClient solrClient, ScrapeConfig collectionsConfig) {
+        Scraper scraper = new Scraper();
+
+        return scraper.collectResponse(solrClient, collectionsConfig);
+    }
+
+    /**
+     *
+     * @param solrClient
+     * @param queryConfig
+     * @return
+     */
+    private Map<String, Collector.MetricFamilySamples> collectQueries(SolrClient solrClient, ScrapeConfig queryConfig) {
+        Scraper scraper = new Scraper();
+
+        return scraper.collectResponse(solrClient, queryConfig);
     }
 
     /**
@@ -73,109 +149,86 @@ public class SolrCollector extends Collector implements Collector.Describable {
      *
      * @return
      */
-    public List<MetricFamilySamples> collect() {
+    public List<Collector.MetricFamilySamples> collect() {
         // start time of scraping.
         long startTime = System.nanoTime();
 
-        List<MetricFamilySamples> metricFamilies = new ArrayList<>();
-
+        Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
         if (this.solrClient instanceof CloudSolrClient) {
-//            // collect overseer status via CollectionsAPI
-//            if (config.getCollectionsAPIOverseerStatus().getEnable()) {
-//                CollectionsAPIOverseerStatusScraper collectionsAPIOverseerStatusScraper = new CollectionsAPIOverseerStatusScraper();
-//                metricFamilies.addAll(collectionsAPIOverseerStatusScraper.scrape((CloudSolrClient) this.solrClient));
-//            }
-//
-//            // cluster status via CollectionsAPI
-//            if (config.getCollectionsAPIClusterStatus().getEnable()) {
-//                CollectionsAPIClusterStatusScraper collectionsAPIClusterStatusScraper = new CollectionsAPIClusterStatusScraper();
-//                metricFamilies.addAll(collectionsAPIClusterStatusScraper.scrape((CloudSolrClient) this.solrClient, config.getCollectionsAPIClusterStatus().getCollections()));
-//            }
-
-            // create target base urls
-            List<HttpSolrClient> httpSolrClients = new ArrayList<>();
             try {
-                httpSolrClients = getHttpSolrClients((CloudSolrClient) this.solrClient);
-
-//                // collect ping status via Ping
-//                if (config.getPing().getEnable()) {
-//                    PingScraper pingScraper = new PingScraper();
-//                    metricFamilies.addAll(pingScraper.scrape(httpSolrClients, config.getPing().getCores()));
-//                }
-//
-//                // collect cores status via CoreAdminAPI
-//                if (config.getCoreAdminAPIStatus().getEnable()) {
-//                    CoreAdminAPIStatusScraper coreAdminStatusCollector = new CoreAdminAPIStatusScraper();
-//                    metricFamilies.addAll(coreAdminStatusCollector.scrape(httpSolrClients, config.getCoreAdminAPIStatus().getCores()));
-//                }
-//
-//                // collect MBean stats via MBean Query Handler
-//                if (config.getmBeanRequestHandler().getEnable()) {
-//                    MBeanRequestHandlerScraper mBeanRequestHandlerScraper = new MBeanRequestHandlerScraper();
-//                    metricFamilies.addAll(mBeanRequestHandlerScraper.scrape(httpSolrClients, config.getmBeanRequestHandler().getCores(), config.getmBeanRequestHandler().getCat(), config.getmBeanRequestHandler().getKey()));
-//                }
-//
-//                // collect metrics via MetricsReporting Reporting
-//                if (config.getMetricsReporting().getEnable()) {
-//                    MetricsReportingScraper metricsReportingScraper = new MetricsReportingScraper();
-//                    metricFamilies.addAll(metricsReportingScraper.scrape(httpSolrClients, config.getMetricsReporting().getGroup(),config.getMetricsReporting().getType(),config.getMetricsReporting().getPrefix()));
-//                }
-
-            } catch (SolrServerException | IOException e) {
-                logger.error("Get base urls failed: " + e.toString());
-            } finally {
+                List<HttpSolrClient> httpSolrClients = getHttpSolrClients((CloudSolrClient) this.solrClient);
                 for (HttpSolrClient httpSolrClient : httpSolrClients) {
                     try {
-                        httpSolrClient.close();
-                    } catch (IOException e) {
-                        logger.error("Close client failed: " + e.toString());
+                        mergeMetrics(metricFamilySamplesMap, collectPing(httpSolrClient, this.config.getPingConfig()));
+                        mergeMetrics(metricFamilySamplesMap, collectMetrics(httpSolrClient, this.config.getMetricsConfig()));
+                    } finally {
+                        try {
+                            httpSolrClient.close();
+                        } catch (IOException e) {
+                            logger.error(e.getMessage());
+                        }
                     }
                 }
+            } catch (SolrServerException | IOException e) {
+                logger.error(e.getMessage());
             }
-        } else {
-//            // collect ping status via Ping
-//            if (config.getPing().getEnable()) {
-//                PingScraper pingScraper = new PingScraper();
-//                metricFamilies.addAll(pingScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getPing().getCores()));
-//            }
-//
-//            // collect cores status via CoreAdminAPI
-//            if (config.getCoreAdminAPIStatus().getEnable()) {
-//                CoreAdminAPIStatusScraper coreAdminStatusCollector = new CoreAdminAPIStatusScraper();
-//                metricFamilies.addAll(coreAdminStatusCollector.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getCoreAdminAPIStatus().getCores()));
-//            }
-//
-//            // collect MBean stats via MBean Query Handler
-//            if (config.getmBeanRequestHandler().getEnable()) {
-//                MBeanRequestHandlerScraper mBeanRequestHandlerScraper = new MBeanRequestHandlerScraper();
-//                metricFamilies.addAll(mBeanRequestHandlerScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getmBeanRequestHandler().getCores(), config.getmBeanRequestHandler().getCat(), config.getmBeanRequestHandler().getKey()));
-//            }
-//
-//            // collect metrics via MetricsReporting Reporting
-//            if (config.getMetricsReporting().getEnable()) {
-//                MetricsReportingScraper metricsReportingScraper = new MetricsReportingScraper();
-//                metricFamilies.addAll(metricsReportingScraper.scrape(Collections.singletonList((HttpSolrClient) this.solrClient), config.getMetricsReporting().getGroup(),config.getMetricsReporting().getType(),config.getMetricsReporting().getPrefix()));
-//            }
 
+            mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.config.getCollectionsConfig()));
+
+
+        } else {
+            mergeMetrics(metricFamilySamplesMap, collectPing(this.solrClient, this.config.getPingConfig()));
+            mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.config.getMetricsConfig()));
         }
 
-        Scraper scraper = new Scraper();
-        metricFamilies.addAll(scraper.collectResponse(this.solrClient, config.getScraperConfigs()));
+        for (ScrapeConfig c : config.getQueryConfigs()) {
+            mergeMetrics(metricFamilySamplesMap, collectQueries(this.solrClient, c));
+        }
 
-//        // facets
-//        if (config.getFacet().getEnable()) {
-//            FacetScraper facetScraper = new FacetScraper();
-//            metricFamilies.addAll(facetScraper.collectFacet(this.solrClient, config.getFacet().getQueries()));
-//        }
+        List<MetricFamilySamples> metricFamiliesSamplesList = new ArrayList<>();
 
-        // duration
-        List<MetricFamilySamples.Sample> durationSample = new ArrayList<>();
-        durationSample.add(new MetricFamilySamples.Sample("solr_scrape_duration_seconds", new ArrayList<>(), new ArrayList<>(), (System.nanoTime() - startTime) / 1.0E9));
-        metricFamilies.add(new MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", durationSample));
+        // add solr metrics
+        for (String gaugeMetricName : metricFamilySamplesMap.keySet()) {
+            Collector.MetricFamilySamples metricFamilySamples = metricFamilySamplesMap.get(gaugeMetricName);
 
-        return metricFamilies;
+            if (metricFamilySamples.samples.size() > 0) {
+                metricFamiliesSamplesList.add(metricFamilySamples);
+            }
+        }
+
+        // add scrape duration metric
+        List<Collector.MetricFamilySamples.Sample> durationSample = new ArrayList<>();
+        durationSample.add(new Collector.MetricFamilySamples.Sample("solr_scrape_duration_seconds", new ArrayList<>(), new ArrayList<>(), (System.nanoTime() - startTime) / 1.0E9));
+        metricFamiliesSamplesList.add(new Collector.MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", durationSample));
+
+        return metricFamiliesSamplesList;
     }
+
+    /**
+     *
+     * @param metrics1
+     * @param metrics2
+     * @return
+     */
+    private Map<String, Collector.MetricFamilySamples> mergeMetrics(Map<String, Collector.MetricFamilySamples> metrics1, Map<String, Collector.MetricFamilySamples> metrics2) {
+
+        // marge MetricFamilySamples
+        for (String k : metrics2.keySet()) {
+            if (metrics1.containsKey(k)) {
+                for (MetricFamilySamples.Sample sample : metrics2.get(k).samples) {
+                    if (!metrics1.get(k).samples.contains(sample)) {
+                        metrics1.get(k).samples.add(sample);
+                    }
+                }
+            } else {
+                metrics1.put(k, metrics2.get(k));
+            }
+        }
+
+        return metrics1;
+    }
+
 
     /**
      * Get target cores via CoreAdminAPI.
@@ -196,13 +249,14 @@ public class SolrCollector extends Collector implements Collector.Describable {
         coreAdminRequest.setIndexInfoNeeded(false);
 
         NamedList<Object> coreAdminResponse = httpSolrClient.request(coreAdminRequest);
-        String jsonResponse = (String) coreAdminResponse.get("response");
 
-        String jsonPath = "$.status..name";
-        JSONArray names = JsonPath.read(jsonResponse, jsonPath);
-        for (int i = 0; i < names.size(); i++) {
-            String name = (String) names.get(i);
-            cores.add(name);
+        JsonNode statusJsonNode = om.readTree((String) coreAdminResponse.get("response")).get("status");
+
+        for (Iterator<JsonNode> i = statusJsonNode.iterator(); i.hasNext(); ) {
+            String core = i.next().get("name").textValue();
+            if (!cores.contains(core)) {
+                cores.add(core);
+            }
         }
 
         return cores;
@@ -217,7 +271,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @throws IOException
      */
     public static List<String> getCollections(CloudSolrClient cloudSolrClient) throws SolrServerException, IOException {
-        List<String> collections;
+        List<String> collections = new ArrayList<>();
 
         NoOpResponseParser responseParser = new NoOpResponseParser();
         responseParser.setWriterType("json");
@@ -229,7 +283,9 @@ public class SolrCollector extends Collector implements Collector.Describable {
         NamedList<Object> collectionAdminResponse = cloudSolrClient.request(collectionAdminRequest);
         String jsonResponse = (String) collectionAdminResponse.get("response");
 
-        collections = JsonPath.read(jsonResponse, "$.collections");
+//        collections = JsonPath.read(jsonResponse, "$.collections");
+
+        JsonNode responseJson = om.readTree((String) collectionAdminResponse.get("response"));
 
         return collections;
     }
@@ -251,12 +307,11 @@ public class SolrCollector extends Collector implements Collector.Describable {
         CollectionAdminRequest collectionAdminRequest = new CollectionAdminRequest.ClusterStatus();
 
         NamedList<Object> collectionAdminResponse = cloudSolrClient.request(collectionAdminRequest);
-        String jsonResponse = (String) collectionAdminResponse.get("response");
 
-        String jsonPath = "$.cluster..base_url";
-        JSONArray values = JsonPath.read(jsonResponse, jsonPath);
-        for (int i = 0; i < values.size(); i++) {
-            String baseUrl = (String) values.get(i);
+        List<JsonNode> baseUrlJsonNode = om.readTree((String) collectionAdminResponse.get("response")).findValues("base_url");
+
+        for (Iterator<JsonNode> i = baseUrlJsonNode.iterator(); i.hasNext(); ) {
+            String baseUrl = i.next().textValue();
             if (!baseUrls.contains(baseUrl)) {
                 baseUrls.add(baseUrl);
             }

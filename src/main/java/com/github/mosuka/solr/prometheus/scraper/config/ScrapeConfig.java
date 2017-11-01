@@ -19,23 +19,38 @@ package com.github.mosuka.solr.prometheus.scraper.config;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ping {
-    private Boolean enable = false;
-    private List<String> cores = new ArrayList<>();
+public class ScrapeConfig implements Cloneable {
+    private Query query = new Query();
 
-    public Boolean getEnable() {
-        return enable;
+    private List<String> jsonQueries = new ArrayList<>();
+
+    public Query getQuery() {
+        return this.query;
     }
 
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
+    public void setQuery(Query query) {
+        this.query = query;
     }
 
-    public List<String> getCores() {
-        return cores;
+    public List<String> getJsonQueries() {
+        return jsonQueries;
     }
 
-    public void setCores(List<String> cores) {
-        this.cores = cores;
+    public void setJsonQueries(List<String> jsonQueries) {
+        this.jsonQueries = jsonQueries;
+    }
+
+    public ScrapeConfig clone() throws CloneNotSupportedException {
+        ScrapeConfig scrapeConfig = null;
+
+        try {
+            scrapeConfig = (ScrapeConfig) super.clone();
+            scrapeConfig.query = (Query) this.query.clone();
+            scrapeConfig.jsonQueries = new ArrayList<>(this.jsonQueries);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return scrapeConfig;
     }
 }

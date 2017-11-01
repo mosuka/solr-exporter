@@ -22,42 +22,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
-//    private String baseUrl = "";
+    private ScrapeConfig pingConfig = new ScrapeConfig();
+    private ScrapeConfig metricsConfig = new ScrapeConfig();
+    private ScrapeConfig collectionsConfig = new ScrapeConfig();
+    private List<ScrapeConfig> queryConfigs = new ArrayList<>();
 
-//    private List<String> zkHosts = new ArrayList<>();
-//    private String znode = "";
-
-    private List<ScraperConfig> scraperConfigs = new ArrayList<>();
-
-//    public String getBaseUrl() {
-//        return baseUrl;
-//    }
-
-//    public void setBaseUrl(String baseUrl) {
-//        this.baseUrl = baseUrl;
-//    }
-
-//    public List<String> getZkHosts() {
-//        return zkHosts;
-//    }
-
-//    public void setZkHosts(List<String> zkHosts) {
-//        this.zkHosts = zkHosts;
-//    }
-
-//    public String getZnode() {
-//        return znode;
-//    }
-
-//    public void setZnode(String zkNode) {
-//        this.znode = zkNode;
-//    }
-
-    public List<ScraperConfig> getScraperConfigs() {
-        return scraperConfigs;
+    public ScrapeConfig getPingConfig() {
+        return pingConfig;
     }
 
-    public void setScraperConfigs(List<ScraperConfig> scraperConfigs) {
-        this.scraperConfigs = scraperConfigs;
+    public void setPingConfig(ScrapeConfig pingConfig) {
+        this.pingConfig = pingConfig;
+    }
+
+    public ScrapeConfig getMetricsConfig() {
+        return metricsConfig;
+    }
+
+    public void setMetricsConfig(ScrapeConfig metricsConfig) {
+        this.metricsConfig = metricsConfig;
+    }
+
+    public ScrapeConfig getCollectionsConfig() {
+        return collectionsConfig;
+    }
+
+    public void setCollectionsConfig(ScrapeConfig collectionsConfig) {
+        this.collectionsConfig = collectionsConfig;
+    }
+
+    public List<ScrapeConfig> getQueryConfigs() {
+        return queryConfigs;
+    }
+
+    public void setQueryConfigs(List<ScrapeConfig> queryConfigs) {
+        this.queryConfigs = queryConfigs;
     }
 }

@@ -25,7 +25,6 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -225,7 +224,7 @@ public class SolrExporter {
                 if (host.contains(",")) {
                     List<String> hosts = new ArrayList<>();
                     for (String h : host.split(",")) {
-                        if (StringUtils.isNotEmpty(h)) {
+                        if (h != null && !h.equals("")) {
                             hosts.add(h.trim());
                         }
                     }
