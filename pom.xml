@@ -44,7 +44,7 @@
           <extraJvmArguments>-Xmx512m -Dlog4j.configuration=file:$BASEDIR/resources/log4j.properties</extraJvmArguments>
           <programs>
             <program>
-              <mainClass>com.github.mosuka.solr.prometheus.exporter.SolrExporter</mainClass>
+              <mainClass>com.github.mosuka.solr.prometheus.exporter.Exporter</mainClass>
               <name>solr-exporter</name>
             </program>
           </programs>

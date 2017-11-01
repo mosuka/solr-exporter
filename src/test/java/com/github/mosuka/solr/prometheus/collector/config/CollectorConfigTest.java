@@ -16,34 +16,30 @@
  */
 package com.github.mosuka.solr.prometheus.collector.config;
 
-import com.github.mosuka.solr.prometheus.scraper.config.*;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileReader;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * Unit test for Config.
+ * Unit test for CollectorConfig.
  */
-public class ConfigTest extends TestCase {
+public class CollectorConfigTest extends TestCase {
     @Test
     public void testLoadFile() throws Exception {
         String configFile = "src/test/files/conf/config.yml";
 
-        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        assertNotNull(config);
+        assertNotNull(collectorConfig);
     }
 
 //    @Test
 //    public void testGetBaseUrl() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        String expected = config.getBaseUrl();
 //        String actual = "";
@@ -54,7 +50,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetBaseUrl() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        config.setBaseUrl("http://localhost:8984/solr");
 //
@@ -67,7 +63,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetZkHosts() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        List<String> expected = Collections.singletonList("localhost:2181");
 //        List<String> actual = config.getZkHosts();
@@ -78,7 +74,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetZkHosts() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        config.setZkHosts(Arrays.asList("localhost:2181", "localhost:2182", "localhost:2183"));
 //
@@ -91,7 +87,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetZnode() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        String expected = "/solr";
 //        String actual = config.getZnode();
@@ -102,7 +98,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetZnode() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        config.setZnode("/solr2");
 //
@@ -115,7 +111,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetPing() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        Ping ping = new Ping();
 //        ping.setEnable(true);
@@ -131,7 +127,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetPing() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        Ping ping = new Ping();
 //        ping.setEnable(false);
@@ -149,7 +145,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetCoreAdminAPIStatus() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        CoreAdminAPIStatus coreAdminAPIStatus = new CoreAdminAPIStatus();
 //        coreAdminAPIStatus.setEnable(true);
@@ -165,7 +161,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetCoreAdminAPIStatus() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        CoreAdminAPIStatus coreAdminAPIStatus = new CoreAdminAPIStatus();
 //        coreAdminAPIStatus.setEnable(false);
@@ -183,7 +179,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetMBeanRequestHandler() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        MBeanRequestHandler MBeanRequestHandler = new MBeanRequestHandler();
 //        MBeanRequestHandler.setEnable(true);
@@ -199,7 +195,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetMBeanRequestHandler() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        MBeanRequestHandler MBeanRequestHandler = new MBeanRequestHandler();
 //        MBeanRequestHandler.setEnable(false);
@@ -217,7 +213,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetCollectionAPIOverseerStatus() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        CollectionsAPIOverseerStatus collectionsAPIOverseerStatus = new CollectionsAPIOverseerStatus();
 //        collectionsAPIOverseerStatus.setEnable(true);
@@ -232,7 +228,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetCollectionAPIOverseerStatus() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        CollectionsAPIOverseerStatus collectionsAPIOverseerStatus = new CollectionsAPIOverseerStatus();
 //        collectionsAPIOverseerStatus.setEnable(false);
@@ -249,7 +245,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetCollectionAPIClusterStatus() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        CollectionsAPIClusterStatus collectionsAPIClusterStatus = new CollectionsAPIClusterStatus();
 //        collectionsAPIClusterStatus.setEnable(true);
@@ -265,7 +261,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetCollectionAPIClusterStatus() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        CollectionsAPIClusterStatus collectionsAPIClusterStatus = new CollectionsAPIClusterStatus();
 //        collectionsAPIClusterStatus.setEnable(false);
@@ -283,7 +279,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetMetricsReporting() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        MetricsReporting metricsReporting = new MetricsReporting();
 //        metricsReporting.setEnable(true);
@@ -301,7 +297,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetMetricsReporting() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        MetricsReporting metricsReporting = new MetricsReporting();
 //        metricsReporting.setEnable(false);
@@ -321,7 +317,7 @@ public class ConfigTest extends TestCase {
 //    public void testGetFacet() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        Facet facet = new Facet();
 //        facet.setEnable(true);
@@ -336,7 +332,7 @@ public class ConfigTest extends TestCase {
 //    public void testSetFacet() throws Exception {
 //        String configFile = "src/test/files/conf/config.yml";
 //
-//        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
+//        CollectorConfig config = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 //
 //        Facet facet = new Facet();
 //        facet.setEnable(false);

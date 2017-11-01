@@ -21,41 +21,41 @@ import com.github.mosuka.solr.prometheus.scraper.config.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Config {
-    private ScrapeConfig pingConfig = new ScrapeConfig();
-    private ScrapeConfig metricsConfig = new ScrapeConfig();
-    private ScrapeConfig collectionsConfig = new ScrapeConfig();
-    private List<ScrapeConfig> queryConfigs = new ArrayList<>();
+public class CollectorConfig {
+    private ScraperConfig pingConfig = new ScraperConfig();
+    private ScraperConfig metricsConfig = new ScraperConfig();
+    private ScraperConfig collectionsConfig = new ScraperConfig();
+    private List<ScraperConfig> queryConfigs = new ArrayList<>();
 
-    public ScrapeConfig getPingConfig() {
+    public ScraperConfig getPingConfig() {
         return pingConfig;
     }
 
-    public void setPingConfig(ScrapeConfig pingConfig) {
+    public void setPingConfig(ScraperConfig pingConfig) {
         this.pingConfig = pingConfig;
     }
 
-    public ScrapeConfig getMetricsConfig() {
+    public ScraperConfig getMetricsConfig() {
         return metricsConfig;
     }
 
-    public void setMetricsConfig(ScrapeConfig metricsConfig) {
+    public void setMetricsConfig(ScraperConfig metricsConfig) {
         this.metricsConfig = metricsConfig;
     }
 
-    public ScrapeConfig getCollectionsConfig() {
+    public ScraperConfig getCollectionsConfig() {
         return collectionsConfig;
     }
 
-    public void setCollectionsConfig(ScrapeConfig collectionsConfig) {
+    public void setCollectionsConfig(ScraperConfig collectionsConfig) {
         this.collectionsConfig = collectionsConfig;
     }
 
-    public List<ScrapeConfig> getQueryConfigs() {
+    public List<ScraperConfig> getQueryConfigs() {
         return queryConfigs;
     }
 
-    public void setQueryConfigs(List<ScrapeConfig> queryConfigs) {
+    public void setQueryConfigs(List<ScraperConfig> queryConfigs) {
         this.queryConfigs = queryConfigs;
     }
 }

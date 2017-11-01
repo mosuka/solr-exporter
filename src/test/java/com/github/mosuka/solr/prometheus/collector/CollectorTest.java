@@ -16,9 +16,8 @@
  */
 package com.github.mosuka.solr.prometheus.collector;
 
-import com.github.mosuka.solr.prometheus.collector.SolrCollector;
-import com.github.mosuka.solr.prometheus.collector.config.Config;
-import com.github.mosuka.solr.prometheus.exporter.SolrExporterTestBase;
+import com.github.mosuka.solr.prometheus.collector.config.CollectorConfig;
+import com.github.mosuka.solr.prometheus.exporter.ExporterTestBase;
 import io.prometheus.client.CollectorRegistry;
 import org.apache.lucene.util.LuceneTestCase.Slow;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -35,10 +34,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Unit test for SolrCollector.
+ * Unit test for Collector.
  */
 @Slow
-public class SolrCollectorTest extends SolrExporterTestBase {
+public class CollectorTest extends ExporterTestBase {
     CollectorRegistry registry;
 
     @Override
@@ -58,8 +57,8 @@ public class SolrCollectorTest extends SolrExporterTestBase {
 
         String configFile = "src/test/files/conf/config.yml";
 
-        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
-//        config.setZkHosts(zkHosts);
+        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+//        collectorConfig.setZkHosts(zkHosts);
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
@@ -77,7 +76,7 @@ public class SolrCollectorTest extends SolrExporterTestBase {
         QueryResponse qr = cloudSolrClient.query("collection1", new SolrQuery("*:*"));
         int numFound = (int) qr.getResults().getNumFound();
 
-        SolrCollector collector = new SolrCollector(cloudSolrClient, config);
+        Collector collector = new Collector(cloudSolrClient, collectorConfig);
 
         collector.register(registry);
 

@@ -18,8 +18,8 @@ package com.github.mosuka.solr.prometheus.scraper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mosuka.solr.prometheus.scraper.config.Query;
-import com.github.mosuka.solr.prometheus.scraper.config.ScrapeConfig;
+import com.github.mosuka.solr.prometheus.scraper.config.QueryConfig;
+import com.github.mosuka.solr.prometheus.scraper.config.ScraperConfig;
 import io.prometheus.client.Collector;
 import io.prometheus.client.GaugeMetricFamily;
 import net.thisptr.jackson.jq.JsonQuery;
@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public class SolrScraper {
-    private static final Logger logger = LoggerFactory.getLogger(SolrScraper.class);
+public class Scraper {
+    private static final Logger logger = LoggerFactory.getLogger(Scraper.class);
 
     /**
      * Collect facet count.
@@ -47,15 +47,15 @@ public class SolrScraper {
      * @param scraperConfig
      * @return
      */
-    public Map<String, Collector.MetricFamilySamples> collectResponse(SolrClient solrClient, ScrapeConfig scraperConfig) {
+    public Map<String, Collector.MetricFamilySamples> collectResponse(SolrClient solrClient, ScraperConfig scraperConfig) {
         Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
         try {
-            Query query = scraperConfig.getQuery();
+            QueryConfig queryConfig = scraperConfig.getQueryConfig();
 
             // create Solr request parameters
             ModifiableSolrParams params = new ModifiableSolrParams();
-            for (Map<String, String> param : query.getParams()) {
+            for (Map<String, String> param : queryConfig.getParams()) {
                 for (String name : param.keySet()) {
                     Object obj = param.get(name);
                     if (obj instanceof Number) {
@@ -66,12 +66,12 @@ public class SolrScraper {
                 }
             }
 
-            // create Solr query request
+            // create Solr queryConfig request
             QueryRequest queryRequest = new QueryRequest(params);
-            queryRequest.setPath(query.getPath());
+            queryRequest.setPath(queryConfig.getPath());
 
             // invoke Solr
-            NamedList<Object> queryResponse = query.getCollection().isEmpty() ? solrClient.request(queryRequest) : solrClient.request(queryRequest, query.getCollection());
+            NamedList<Object> queryResponse = queryConfig.getCollection().isEmpty() ? solrClient.request(queryRequest) : solrClient.request(queryRequest, queryConfig.getCollection());
 
             ObjectMapper om = new ObjectMapper();
             JsonNode metricsJson = om.readTree((String) queryResponse.get("response"));
@@ -97,9 +97,9 @@ public class SolrScraper {
                             labelValues.add(((CloudSolrClient) solrClient).getZkHost());
                         }
 
-                        if (scraperConfig.getQuery().getCollection() != null && !scraperConfig.getQuery().getCollection().equals("")) {
+                        if (scraperConfig.getQueryConfig().getCollection() != null && !scraperConfig.getQueryConfig().getCollection().equals("")) {
                             labelNames.add("collection");
-                            labelValues.add(scraperConfig.getQuery().getCollection());
+                            labelValues.add(scraperConfig.getQueryConfig().getCollection());
                         }
 
                         for(Iterator<JsonNode> i = result.get("label_names").iterator();i.hasNext();){

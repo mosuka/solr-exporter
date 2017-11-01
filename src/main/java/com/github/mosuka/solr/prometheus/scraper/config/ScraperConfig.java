@@ -19,17 +19,17 @@ package com.github.mosuka.solr.prometheus.scraper.config;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrapeConfig implements Cloneable {
-    private Query query = new Query();
+public class ScraperConfig implements Cloneable {
+    private QueryConfig queryConfig = new QueryConfig();
 
     private List<String> jsonQueries = new ArrayList<>();
 
-    public Query getQuery() {
-        return this.query;
+    public QueryConfig getQueryConfig() {
+        return this.queryConfig;
     }
 
-    public void setQuery(Query query) {
-        this.query = query;
+    public void setQueryConfig(QueryConfig queryConfig) {
+        this.queryConfig = queryConfig;
     }
 
     public List<String> getJsonQueries() {
@@ -40,17 +40,17 @@ public class ScrapeConfig implements Cloneable {
         this.jsonQueries = jsonQueries;
     }
 
-    public ScrapeConfig clone() throws CloneNotSupportedException {
-        ScrapeConfig scrapeConfig = null;
+    public ScraperConfig clone() throws CloneNotSupportedException {
+        ScraperConfig scraperConfig = null;
 
         try {
-            scrapeConfig = (ScrapeConfig) super.clone();
-            scrapeConfig.query = (Query) this.query.clone();
-            scrapeConfig.jsonQueries = new ArrayList<>(this.jsonQueries);
+            scraperConfig = (ScraperConfig) super.clone();
+            scraperConfig.queryConfig = this.queryConfig.clone();
+            scraperConfig.jsonQueries = new ArrayList<>(this.jsonQueries);
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        return scrapeConfig;
+        return scraperConfig;
     }
 }

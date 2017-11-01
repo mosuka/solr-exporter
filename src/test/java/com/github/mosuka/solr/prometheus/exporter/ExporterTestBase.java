@@ -23,7 +23,7 @@ import org.apache.solr.cloud.SolrCloudTestCase;
 import org.junit.BeforeClass;
 
 @ThreadLeakScope(ThreadLeakScope.Scope.NONE)
-public class SolrExporterTestBase extends SolrCloudTestCase {
+public class ExporterTestBase extends SolrCloudTestCase {
     public static String COLLECTION = "collection1";
     public static String CONF_NAME = COLLECTION + "_config";
     public static String CONF_DIR = "src/test/files/solr/server/solr/configsets/_default/conf";

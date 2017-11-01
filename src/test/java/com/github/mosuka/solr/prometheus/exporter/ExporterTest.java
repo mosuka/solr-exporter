@@ -16,7 +16,7 @@
  */
 package com.github.mosuka.solr.prometheus.exporter;
 
-import com.github.mosuka.solr.prometheus.collector.config.Config;
+import com.github.mosuka.solr.prometheus.collector.config.CollectorConfig;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -29,15 +29,14 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileReader;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Unit test for SolrExporter.
+ * Unit test for Exporter.
  */
 @Slow
-public class SolrExporterTest extends SolrExporterTestBase {
+public class ExporterTest extends ExporterTestBase {
 
     @Override
     public void setUp() throws Exception {
@@ -55,10 +54,10 @@ public class SolrExporterTest extends SolrExporterTestBase {
 
         String configFile = "src/test/files/conf/config.yml";
 
-        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
-//        config.setBaseUrl(baseUrl);
-//        config.setZkHosts(new ArrayList<>());
-//        config.setZnode("");
+        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+//        collectorConfig.setBaseUrl(baseUrl);
+//        collectorConfig.setZkHosts(new ArrayList<>());
+//        collectorConfig.setZnode("");
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
@@ -72,9 +71,9 @@ public class SolrExporterTest extends SolrExporterTestBase {
             socket.close();
         }
 
-        SolrExporter solrExporter = new SolrExporter(port, cloudSolrClient, config);
+        Exporter exporter = new Exporter(port, cloudSolrClient, collectorConfig);
         try {
-            solrExporter.start();
+            exporter.start();
 
             URI uri = new URI("http://localhost:" + String.valueOf(port) + "/metrics");
 
@@ -93,7 +92,7 @@ public class SolrExporterTest extends SolrExporterTestBase {
                 httpclient.close();
             }
         } finally {
-            solrExporter.stop();
+            exporter.stop();
         }
     }
 
@@ -103,10 +102,10 @@ public class SolrExporterTest extends SolrExporterTestBase {
 
         String configFile = "src/test/files/conf/config.yml";
 
-        Config config = new Yaml().loadAs(new FileReader(configFile), Config.class);
-//        config.setBaseUrl("");
-//        config.setZkHosts(zkHosts);
-//        config.setZnode("/solr");
+        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+//        collectorConfig.setBaseUrl("");
+//        collectorConfig.setZkHosts(zkHosts);
+//        collectorConfig.setZnode("/solr");
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
@@ -120,9 +119,9 @@ public class SolrExporterTest extends SolrExporterTestBase {
             socket.close();
         }
 
-        SolrExporter solrExporter = new SolrExporter(port, cloudSolrClient, config);
+        Exporter exporter = new Exporter(port, cloudSolrClient, collectorConfig);
         try {
-            solrExporter.start();
+            exporter.start();
 
             URI uri = new URI("http://localhost:" + String.valueOf(port) + "/metrics");
 
@@ -141,7 +140,7 @@ public class SolrExporterTest extends SolrExporterTestBase {
                 httpclient.close();
             }
         } finally {
-            solrExporter.stop();
+            exporter.stop();
         }
     }
 }

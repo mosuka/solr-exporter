@@ -19,7 +19,7 @@ $ $ tree solr-exporter-0.1.0
   |   |-- solr-exporter
   |   `-- solr-exporter.bat
   |-- conf
-  |   `-- config.yml
+  |   `-- collectorConfig.yml
   |-- lib
   |   |-- accessors-smart-1.2.jar
   |   |-- argparse4j-0.7.0.jar
@@ -217,8 +217,8 @@ facet:
         - facet: "on"
         - facet.field: "cat"
         - facet.field: "manu"
-        - facet.query: "inStock:true"
-        - facet.query: "inStock:false"
+        - facet.queryConfig: "inStock:true"
+        - facet.queryConfig: "inStock:false"
         - facet.range: "price"
         - f.price.facet.range.start: "0"
         - f.price.facet.range.end: "3000"

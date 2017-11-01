@@ -18,10 +18,9 @@ package com.github.mosuka.solr.prometheus.collector;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mosuka.solr.prometheus.collector.config.Config;
+import com.github.mosuka.solr.prometheus.collector.config.CollectorConfig;
 import com.github.mosuka.solr.prometheus.scraper.*;
-import com.github.mosuka.solr.prometheus.scraper.config.ScrapeConfig;
-import io.prometheus.client.Collector;
+import com.github.mosuka.solr.prometheus.scraper.config.ScraperConfig;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -39,25 +38,25 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * SolrCollector
+ * Collector
  *
  */
-public class SolrCollector extends Collector implements Collector.Describable {
-    private static final Logger logger = LoggerFactory.getLogger(SolrCollector.class);
+public class Collector extends io.prometheus.client.Collector implements io.prometheus.client.Collector.Describable {
+    private static final Logger logger = LoggerFactory.getLogger(Collector.class);
 
     private SolrClient solrClient;
-    private Config config = new Config();
+    private CollectorConfig collectorConfig = new CollectorConfig();
 
     private static ObjectMapper om = new ObjectMapper();
 
     /**
      * Constructor.
      *
-     * @param config
+     * @param collectorConfig
      */
-    public SolrCollector(SolrClient solrClient, Config config) {
+    public Collector(SolrClient solrClient, CollectorConfig collectorConfig) {
         this.solrClient = solrClient;
-        this.config = config;
+        this.collectorConfig = collectorConfig;
     }
 
     /**
@@ -65,9 +64,9 @@ public class SolrCollector extends Collector implements Collector.Describable {
      *
      * @return
      */
-    public List<Collector.MetricFamilySamples> describe() {
-        List<Collector.MetricFamilySamples> metricFamilies = new ArrayList<>();
-        metricFamilies.add(new Collector.MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", new ArrayList<>()));
+    public List<io.prometheus.client.Collector.MetricFamilySamples> describe() {
+        List<io.prometheus.client.Collector.MetricFamilySamples> metricFamilies = new ArrayList<>();
+        metricFamilies.add(new io.prometheus.client.Collector.MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", new ArrayList<>()));
         return metricFamilies;
     }
 
@@ -77,12 +76,12 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @param pingConfig
      * @return
      */
-    private Map<String, Collector.MetricFamilySamples> collectPing(SolrClient solrClient, ScrapeConfig pingConfig) {
-        Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
+    private Map<String, io.prometheus.client.Collector.MetricFamilySamples> collectPing(SolrClient solrClient, ScraperConfig pingConfig) {
+        Map<String, io.prometheus.client.Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
-        SolrScraper scraper = new SolrScraper();
+        Scraper scraper = new Scraper();
 
-        if (pingConfig.getQuery().getCollection() != null && !pingConfig.getQuery().getCollection().equals("")) {
+        if (pingConfig.getQueryConfig().getCollection() != null && !pingConfig.getQueryConfig().getCollection().equals("")) {
             // collect specified collection/core
             metricFamilySamplesMap = scraper.collectResponse(solrClient, pingConfig);
         } else {
@@ -92,9 +91,9 @@ public class SolrCollector extends Collector implements Collector.Describable {
 
                 for (String core : cores) {
                     try {
-                        // clone scrape config
-                        ScrapeConfig c = pingConfig.clone();
-                        c.getQuery().setCollection(core);
+                        // clone scrape collectorConfig
+                        ScraperConfig c = pingConfig.clone();
+                        c.getQueryConfig().setCollection(core);
                         mergeMetrics(metricFamilySamplesMap, scraper.collectResponse(solrClient, c));
                     } catch (CloneNotSupportedException e) {
                         logger.error(e.getMessage());
@@ -114,8 +113,8 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @param metricsConfig
      * @return
      */
-    private Map<String, Collector.MetricFamilySamples> collectMetrics(SolrClient solrClient, ScrapeConfig metricsConfig) {
-        SolrScraper scraper = new SolrScraper();
+    private Map<String, io.prometheus.client.Collector.MetricFamilySamples> collectMetrics(SolrClient solrClient, ScraperConfig metricsConfig) {
+        Scraper scraper = new Scraper();
 
         return scraper.collectResponse(solrClient, metricsConfig);
     }
@@ -126,8 +125,8 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @param collectionsConfig
      * @return
      */
-    private Map<String, Collector.MetricFamilySamples> collectCollections(SolrClient solrClient, ScrapeConfig collectionsConfig) {
-        SolrScraper scraper = new SolrScraper();
+    private Map<String, io.prometheus.client.Collector.MetricFamilySamples> collectCollections(SolrClient solrClient, ScraperConfig collectionsConfig) {
+        Scraper scraper = new Scraper();
 
         return scraper.collectResponse(solrClient, collectionsConfig);
     }
@@ -138,8 +137,8 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @param queryConfig
      * @return
      */
-    private Map<String, Collector.MetricFamilySamples> collectQueries(SolrClient solrClient, ScrapeConfig queryConfig) {
-        SolrScraper scraper = new SolrScraper();
+    private Map<String, io.prometheus.client.Collector.MetricFamilySamples> collectQueries(SolrClient solrClient, ScraperConfig queryConfig) {
+        Scraper scraper = new Scraper();
 
         return scraper.collectResponse(solrClient, queryConfig);
     }
@@ -149,19 +148,19 @@ public class SolrCollector extends Collector implements Collector.Describable {
      *
      * @return
      */
-    public List<Collector.MetricFamilySamples> collect() {
+    public List<io.prometheus.client.Collector.MetricFamilySamples> collect() {
         // start time of scraping.
         long startTime = System.nanoTime();
 
-        Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
+        Map<String, io.prometheus.client.Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
         if (this.solrClient instanceof CloudSolrClient) {
             try {
                 List<HttpSolrClient> httpSolrClients = getHttpSolrClients((CloudSolrClient) this.solrClient);
                 for (HttpSolrClient httpSolrClient : httpSolrClients) {
                     try {
-                        mergeMetrics(metricFamilySamplesMap, collectPing(httpSolrClient, this.config.getPingConfig()));
-                        mergeMetrics(metricFamilySamplesMap, collectMetrics(httpSolrClient, this.config.getMetricsConfig()));
+                        mergeMetrics(metricFamilySamplesMap, collectPing(httpSolrClient, this.collectorConfig.getPingConfig()));
+                        mergeMetrics(metricFamilySamplesMap, collectMetrics(httpSolrClient, this.collectorConfig.getMetricsConfig()));
                     } finally {
                         try {
                             httpSolrClient.close();
@@ -174,15 +173,15 @@ public class SolrCollector extends Collector implements Collector.Describable {
                 logger.error(e.getMessage());
             }
 
-            mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.config.getCollectionsConfig()));
+            mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.collectorConfig.getCollectionsConfig()));
 
 
         } else {
-            mergeMetrics(metricFamilySamplesMap, collectPing(this.solrClient, this.config.getPingConfig()));
-            mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.config.getMetricsConfig()));
+            mergeMetrics(metricFamilySamplesMap, collectPing(this.solrClient, this.collectorConfig.getPingConfig()));
+            mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.collectorConfig.getMetricsConfig()));
         }
 
-        for (ScrapeConfig c : config.getQueryConfigs()) {
+        for (ScraperConfig c : collectorConfig.getQueryConfigs()) {
             mergeMetrics(metricFamilySamplesMap, collectQueries(this.solrClient, c));
         }
 
@@ -190,7 +189,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
 
         // add solr metrics
         for (String gaugeMetricName : metricFamilySamplesMap.keySet()) {
-            Collector.MetricFamilySamples metricFamilySamples = metricFamilySamplesMap.get(gaugeMetricName);
+            io.prometheus.client.Collector.MetricFamilySamples metricFamilySamples = metricFamilySamplesMap.get(gaugeMetricName);
 
             if (metricFamilySamples.samples.size() > 0) {
                 metricFamiliesSamplesList.add(metricFamilySamples);
@@ -198,9 +197,9 @@ public class SolrCollector extends Collector implements Collector.Describable {
         }
 
         // add scrape duration metric
-        List<Collector.MetricFamilySamples.Sample> durationSample = new ArrayList<>();
-        durationSample.add(new Collector.MetricFamilySamples.Sample("solr_scrape_duration_seconds", new ArrayList<>(), new ArrayList<>(), (System.nanoTime() - startTime) / 1.0E9));
-        metricFamiliesSamplesList.add(new Collector.MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", durationSample));
+        List<io.prometheus.client.Collector.MetricFamilySamples.Sample> durationSample = new ArrayList<>();
+        durationSample.add(new io.prometheus.client.Collector.MetricFamilySamples.Sample("solr_scrape_duration_seconds", new ArrayList<>(), new ArrayList<>(), (System.nanoTime() - startTime) / 1.0E9));
+        metricFamiliesSamplesList.add(new io.prometheus.client.Collector.MetricFamilySamples("solr_scrape_duration_seconds", Type.GAUGE, "Time this Solr scrape took, in seconds.", durationSample));
 
         return metricFamiliesSamplesList;
     }
@@ -211,7 +210,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @param metrics2
      * @return
      */
-    private Map<String, Collector.MetricFamilySamples> mergeMetrics(Map<String, Collector.MetricFamilySamples> metrics1, Map<String, Collector.MetricFamilySamples> metrics2) {
+    private Map<String, io.prometheus.client.Collector.MetricFamilySamples> mergeMetrics(Map<String, io.prometheus.client.Collector.MetricFamilySamples> metrics1, Map<String, io.prometheus.client.Collector.MetricFamilySamples> metrics2) {
 
         // marge MetricFamilySamples
         for (String k : metrics2.keySet()) {

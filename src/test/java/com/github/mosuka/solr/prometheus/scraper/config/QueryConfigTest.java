@@ -21,66 +21,66 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class QueryTest extends TestCase {
+public class QueryConfigTest extends TestCase {
     @Test
     public void testQuery() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
-        assertNotNull(query);
+        assertNotNull(queryConfig);
     }
 
     @Test
     public void testGetCollection() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
         String expected = "";
-        String actual = query.getCollection();
+        String actual = queryConfig.getCollection();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testSetCollection() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
-        query.setCollection("collection1");
+        queryConfig.setCollection("collection1");
 
         String expected = "collection1";
-        String actual = query.getCollection();
+        String actual = queryConfig.getCollection();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetPath() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
         String expected = "";
-        String actual = query.getPath();
+        String actual = queryConfig.getPath();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testSetPath() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
-        query.setPath("/select");
+        queryConfig.setPath("/select");
 
         String expected = "/select";
-        String actual = query.getPath();
+        String actual = queryConfig.getPath();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetParams() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
         List<LinkedHashMap<String, String>> expected = new ArrayList<>();
-        List<LinkedHashMap<String, String>> actual = query.getParams();
+        List<LinkedHashMap<String, String>> actual = queryConfig.getParams();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testSetParams() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
         LinkedHashMap<String,String> param1 = new LinkedHashMap<>();
         param1.put("q", "*:*");
@@ -88,16 +88,16 @@ public class QueryTest extends TestCase {
         LinkedHashMap<String,String> param2 = new LinkedHashMap<>();
         param2.put("facet", "on");
 
-        query.setParams(Arrays.asList(param1, param2));
+        queryConfig.setParams(Arrays.asList(param1, param2));
 
         List<LinkedHashMap<String, String>> expected = Arrays.asList(param1, param2);
-        List<LinkedHashMap<String, String>> actual = query.getParams();
+        List<LinkedHashMap<String, String>> actual = queryConfig.getParams();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetParamsString() throws Exception {
-        Query query = new Query();
+        QueryConfig queryConfig = new QueryConfig();
 
         LinkedHashMap<String,String> param1 = new LinkedHashMap<>();
         param1.put("q", "*:*");
@@ -106,10 +106,10 @@ public class QueryTest extends TestCase {
         LinkedHashMap<String,String> param2 = new LinkedHashMap<>();
         param2.put("facet", "on");
 
-        query.setParams(Arrays.asList(param1, param2));
+        queryConfig.setParams(Arrays.asList(param1, param2));
 
         String expected = "q=*:*&fq=manu:apple&facet=on";
-        String actual = query.getParamsString();
+        String actual = queryConfig.getParamsString();
         assertEquals(expected, actual);
     }
 }

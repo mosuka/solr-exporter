@@ -16,8 +16,8 @@
  */
 package com.github.mosuka.solr.prometheus.exporter;
 
-import com.github.mosuka.solr.prometheus.collector.SolrCollector;
-import com.github.mosuka.solr.prometheus.collector.config.Config;
+import com.github.mosuka.solr.prometheus.collector.Collector;
+import com.github.mosuka.solr.prometheus.collector.config.CollectorConfig;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.exporter.HTTPServer;
 import net.sourceforge.argparse4j.ArgumentParsers;
@@ -45,11 +45,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * SolrExporter
+ * Exporter
  *
  */
-public class SolrExporter {
-    private static final Logger logger = LoggerFactory.getLogger(SolrCollector.class);
+public class Exporter {
+    private static final Logger logger = LoggerFactory.getLogger(Collector.class);
 
     /**
      * -v, --version
@@ -87,22 +87,22 @@ public class SolrExporter {
     private static final String ARG_ZK_HOST_HELP = "ZooKeeper connection string (ex: 'localhost:2181/solr'). Specify this when connecting to a Solr cluster in SolrCloud mode.";
 
     /**
-     * -c, --config
+     * -c, --collectorConfig
      */
-    private static final String[] ARG_CONFIG_FLAGS = { "-c", "--config" };
+    private static final String[] ARG_CONFIG_FLAGS = { "-c", "--collectorConfig" };
     private static final String ARG_CONFIG_METAVAR = "CONFIG";
-    private static final String ARG_CONFIG_DEST = "config";
-    private static final String ARG_CONFIG_DEFAULT = "./conf/config.yml";
+    private static final String ARG_CONFIG_DEST = "collectorConfig";
+    private static final String ARG_CONFIG_DEFAULT = "./conf/collectorConfig.yml";
     private static final String ARG_CONFIG_HELP = "Configuration file.";
 
     private int port;
-    private Config config;
+    private CollectorConfig collectorConfig;
     private SolrClient solrClient;
 
     CollectorRegistry collectorRegistry = new CollectorRegistry();
 
     private HTTPServer httpServer;
-    private SolrCollector solrCollector;
+    private Collector collector;
 
     /**
      * Constructor.
@@ -111,8 +111,8 @@ public class SolrExporter {
      * @param solrClient the solr client.
      * @param configFile  the configuration file path.
      */
-    public SolrExporter(int port, SolrClient solrClient, File configFile) throws IOException {
-        this(port, solrClient, new Yaml().loadAs(new FileReader(configFile), Config.class));
+    public Exporter(int port, SolrClient solrClient, File configFile) throws IOException {
+        this(port, solrClient, new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class));
     }
 
     /**
@@ -120,14 +120,14 @@ public class SolrExporter {
      *
      * @param port
      * @param solrClient the solr client.
-     * @param config
+     * @param collectorConfig
      */
-    public SolrExporter(int port, SolrClient solrClient, Config config) {
+    public Exporter(int port, SolrClient solrClient, CollectorConfig collectorConfig) {
         super();
 
         this.port = port;
         this.solrClient = solrClient;
-        this.config = config;
+        this.collectorConfig = collectorConfig;
 
     }
 
@@ -138,9 +138,9 @@ public class SolrExporter {
     public void start() throws MalformedObjectNameException, IOException {
         InetSocketAddress socket = new InetSocketAddress(this.port);
 
-        this.solrCollector = new SolrCollector(this.solrClient, this.config);
+        this.collector = new Collector(this.solrClient, this.collectorConfig);
 
-        this.collectorRegistry.register(this.solrCollector);
+        this.collectorRegistry.register(this.collector);
 
         this.httpServer = new HTTPServer(socket, this.collectorRegistry);
     }
@@ -148,7 +148,7 @@ public class SolrExporter {
     public void stop() throws IOException {
         this.solrClient.close();
         this.httpServer.stop();
-        this.collectorRegistry.unregister(this.solrCollector);
+        this.collectorRegistry.unregister(this.collector);
     }
 
     /**
@@ -159,13 +159,13 @@ public class SolrExporter {
     public static void main( String[] args ) {
         try {
             Properties properties = new Properties();
-            properties.load(SolrExporter.class.getResourceAsStream("version.properties"));
+            properties.load(Exporter.class.getResourceAsStream("version.properties"));
             VERSION = (String) properties.get("SOLR_EXPORTER.VERSION");
         } catch (Exception e) {
             logger.warn("Read version.properties failed: " + e.toString());
         }
 
-        ArgumentParser parser = ArgumentParsers.newArgumentParser(SolrCollector.class.getSimpleName())
+        ArgumentParser parser = ArgumentParsers.newArgumentParser(Collector.class.getSimpleName())
                 .description("Prometheus exporter for Apache Solr.").version(VERSION);
 
         parser.addArgument(ARG_VERSION_FLAGS).dest(ARG_VERSION_DEST)
@@ -250,8 +250,8 @@ public class SolrExporter {
 
             File configFile = new File(res.getString(ARG_CONFIG_DEST));
 
-            SolrExporter solrExporter = new SolrExporter(port, solrClient, configFile);
-            solrExporter.start();
+            Exporter exporter = new Exporter(port, solrClient, configFile);
+            exporter.start();
             logger.info("Start server");
         } catch (MalformedObjectNameException | IOException e) {
             logger.error("Start server failed: " + e.toString());
