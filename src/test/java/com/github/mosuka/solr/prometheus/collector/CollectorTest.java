@@ -53,19 +53,30 @@ public class CollectorTest extends ExporterTestBase {
 
     @Test
     public void testSolrCollector() throws Exception {
-        List<String> zkHosts = Collections.singletonList(cluster.getZkServer().getZkHost());
+        String configFile = "conf/config.yml";
 
-        String configFile = "src/test/files/conf/config.yml";
-
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
-//        collectorConfig.setZkHosts(zkHosts);
-
-        // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
+        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
+        Collector collector = new Collector(cloudSolrClient, collectorConfig);
+
+        assertNotNull(collector);
+
+    }
+
+    @Test
+    public void testCollectPing() throws Exception {
+        String configFile = "conf/config.yml";
+
+        CloudSolrClient cloudSolrClient = cluster.getSolrClient();
+        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+
+        Collector collector = new Collector(cloudSolrClient, collectorConfig);
+        collector.register(registry);
+
+        // index sample docs
         File exampleDocsDir = new File("src/test/files/solr/example/exampledocs");
         List<File> xmlFiles = Arrays.asList(exampleDocsDir.listFiles((dir, name) -> name.endsWith(".xml")));
-
         for (File xml : xmlFiles) {
             ContentStreamUpdateRequest req = new ContentStreamUpdateRequest("/update");
             req.addFile(xml, "application/xml");
@@ -73,14 +84,10 @@ public class CollectorTest extends ExporterTestBase {
         }
         cloudSolrClient.commit("collection1");
 
-        QueryResponse qr = cloudSolrClient.query("collection1", new SolrQuery("*:*"));
-        int numFound = (int) qr.getResults().getNumFound();
-
-        Collector collector = new Collector(cloudSolrClient, collectorConfig);
-
-        collector.register(registry);
+        collector.collect();
 
         assertNotEquals(0.0, registry.getSampleValue("solr_scrape_duration_seconds"));
-    }
 
+    }
 }
+

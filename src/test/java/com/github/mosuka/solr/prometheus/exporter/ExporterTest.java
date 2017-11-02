@@ -50,14 +50,9 @@ public class ExporterTest extends ExporterTestBase {
 
     @Test
     public void testExecuteStandalone() throws Exception {
-        String baseUrl = cluster.getJettySolrRunners().get(0).getBaseUrl().toString();
-
-        String configFile = "src/test/files/conf/config.yml";
+        String configFile = "conf/config.yml";
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
-//        collectorConfig.setBaseUrl(baseUrl);
-//        collectorConfig.setZkHosts(new ArrayList<>());
-//        collectorConfig.setZnode("");
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
@@ -98,14 +93,9 @@ public class ExporterTest extends ExporterTestBase {
 
     @Test
     public void testExecuteSolrCloud() throws Exception {
-        List<String> zkHosts = Collections.singletonList(cluster.getZkServer().getZkHost());
-
         String configFile = "src/test/files/conf/config.yml";
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
-//        collectorConfig.setBaseUrl("");
-//        collectorConfig.setZkHosts(zkHosts);
-//        collectorConfig.setZnode("/solr");
 
         // solr client
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();

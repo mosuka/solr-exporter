@@ -23,7 +23,7 @@ import java.util.*;
 
 public class QueryConfigTest extends TestCase {
     @Test
-    public void testQuery() throws Exception {
+    public void testQueryConfig() throws Exception {
         QueryConfig queryConfig = new QueryConfig();
 
         assertNotNull(queryConfig);

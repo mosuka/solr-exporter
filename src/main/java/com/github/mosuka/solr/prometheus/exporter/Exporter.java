@@ -69,13 +69,13 @@ public class Exporter {
     private static final String ARG_PORT_HELP = "solr-exporter listen port.";
 
     /**
-     * -s, --solrurl
+     * -b, --baseurl
      */
-    private static final String[] ARG_SOLR_URL_FLAGS = { "-s", "--solrurl" };
-    private static final String ARG_SOLR_URL_METAVAR = "SOLR_URL";
-    private static final String ARG_SOLR_URL_DEST = "solrUrl";
-    private static final String ARG_SOLR_URL_DEFAULT = "";
-    private static final String ARG_SOLR_URL_HELP = "Solr base url (ex: 'http://localhost:8983/solr'). Specify this when connecting to Solr in standalone mode.";
+    private static final String[] ARG_BASE_URL_FLAGS = { "-s", "--baseurl" };
+    private static final String ARG_BASE_URL_METAVAR = "BASE_URL";
+    private static final String ARG_BASE_URL_DEST = "baseUrl";
+    private static final String ARG_BASE_URL_DEFAULT = "";
+    private static final String ARG_BASE_URL_HELP = "Solr base url (ex: 'http://localhost:8983/solr'). Specify this when connecting to Solr in standalone mode.";
 
     /**
      * -z, --zkhost
@@ -175,9 +175,9 @@ public class Exporter {
                 .metavar(ARG_PORT_METAVAR).dest(ARG_PORT_DEST).type(Integer.class)
                 .setDefault(ARG_PORT_DEFAULT).help(ARG_PORT_HELP);
 
-        parser.addArgument(ARG_SOLR_URL_FLAGS)
-                .metavar(ARG_SOLR_URL_METAVAR).dest(ARG_SOLR_URL_DEST).type(String.class)
-                .setDefault(ARG_SOLR_URL_DEFAULT).help(ARG_SOLR_URL_HELP);
+        parser.addArgument(ARG_BASE_URL_FLAGS)
+                .metavar(ARG_BASE_URL_METAVAR).dest(ARG_BASE_URL_DEST).type(String.class)
+                .setDefault(ARG_BASE_URL_DEFAULT).help(ARG_BASE_URL_HELP);
 
         parser.addArgument(ARG_ZK_HOST_FLAGS)
                 .metavar(ARG_ZK_HOST_METAVAR).dest(ARG_ZK_HOST_DEST).type(String.class)
@@ -192,15 +192,15 @@ public class Exporter {
 
             int port = res.get(ARG_PORT_DEST);
 
-            String solrUrl = res.getString(ARG_SOLR_URL_DEST);
+            String baseUrl = res.getString(ARG_BASE_URL_DEST);
             String zkHost = res.getString(ARG_ZK_HOST_DEST);
             SolrClient solrClient = null;
-            if (!solrUrl.equals("")) {
+            if (!baseUrl.equals("")) {
                 NoOpResponseParser responseParser = new NoOpResponseParser();
                 responseParser.setWriterType("json");
 
                 HttpSolrClient.Builder builder = new HttpSolrClient.Builder();
-                builder.withBaseSolrUrl(res.getString(ARG_SOLR_URL_DEST));
+                builder.withBaseSolrUrl(res.getString(ARG_BASE_URL_DEST));
 
                 HttpSolrClient httpSolrClient = builder.build();
                 httpSolrClient.setParser(responseParser);
@@ -243,7 +243,7 @@ public class Exporter {
 
                 solrClient = cloudSolrClient;
             } else {
-                String message = String.format("Both [%s %s] and [%s %s] parameter are optional, but at least one of them must be required.", ARG_SOLR_URL_FLAGS[0], ARG_SOLR_URL_METAVAR, ARG_ZK_HOST_FLAGS[0], ARG_ZK_HOST_METAVAR);
+                String message = String.format("Both [%s %s] and [%s %s] parameter are optional, but at least one of them must be required.", ARG_BASE_URL_FLAGS[0], ARG_BASE_URL_METAVAR, ARG_ZK_HOST_FLAGS[0], ARG_ZK_HOST_METAVAR);
                 parser.handleError(new ArgumentParserException(message, parser));
                 System.exit(1);
             }

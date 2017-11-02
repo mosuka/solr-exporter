@@ -173,9 +173,7 @@ public class Collector extends io.prometheus.client.Collector implements io.prom
                 logger.error(e.getMessage());
             }
 
-            mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.collectorConfig.getCollectionsConfig()));
-
-
+            mergeMetrics(metricFamilySamplesMap, collectCollections(this.solrClient, this.collectorConfig.getCollectionsConfig()));
         } else {
             mergeMetrics(metricFamilySamplesMap, collectPing(this.solrClient, this.collectorConfig.getPingConfig()));
             mergeMetrics(metricFamilySamplesMap, collectMetrics(this.solrClient, this.collectorConfig.getMetricsConfig()));
@@ -261,33 +259,33 @@ public class Collector extends io.prometheus.client.Collector implements io.prom
         return cores;
     }
 
-    /**
-     * Get collections via CollectionsAPI.
-     *
-     * @param cloudSolrClient
-     * @return
-     * @throws SolrServerException
-     * @throws IOException
-     */
-    public static List<String> getCollections(CloudSolrClient cloudSolrClient) throws SolrServerException, IOException {
-        List<String> collections = new ArrayList<>();
-
-        NoOpResponseParser responseParser = new NoOpResponseParser();
-        responseParser.setWriterType("json");
-
-        cloudSolrClient.setParser(responseParser);
-
-        CollectionAdminRequest collectionAdminRequest = new CollectionAdminRequest.List();
-
-        NamedList<Object> collectionAdminResponse = cloudSolrClient.request(collectionAdminRequest);
-        String jsonResponse = (String) collectionAdminResponse.get("response");
-
-//        collections = JsonPath.read(jsonResponse, "$.collections");
-
-        JsonNode responseJson = om.readTree((String) collectionAdminResponse.get("response"));
-
-        return collections;
-    }
+//    /**
+//     * Get collections via CollectionsAPI.
+//     *
+//     * @param cloudSolrClient
+//     * @return
+//     * @throws SolrServerException
+//     * @throws IOException
+//     */
+//    public static List<String> getCollections(CloudSolrClient cloudSolrClient) throws SolrServerException, IOException {
+//        List<String> collections = new ArrayList<>();
+//
+//        NoOpResponseParser responseParser = new NoOpResponseParser();
+//        responseParser.setWriterType("json");
+//
+//        cloudSolrClient.setParser(responseParser);
+//
+//        CollectionAdminRequest collectionAdminRequest = new CollectionAdminRequest.List();
+//
+//        NamedList<Object> collectionAdminResponse = cloudSolrClient.request(collectionAdminRequest);
+//        String jsonResponse = (String) collectionAdminResponse.get("response");
+//
+////        collections = JsonPath.read(jsonResponse, "$.collections");
+//
+//        JsonNode responseJson = om.readTree((String) collectionAdminResponse.get("response"));
+//
+//        return collections;
+//    }
 
     /**
      * Get base urls via CollectionsAPI.
@@ -345,84 +343,84 @@ public class Collector extends io.prometheus.client.Collector implements io.prom
         return solrClients;
     }
 
-    private static final Pattern unsafeChars = Pattern.compile("[^a-zA-Z0-9:_]");
-    private static final Pattern multipleUnderscores = Pattern.compile("__+");
-    private static final Pattern startsUnderscores = Pattern.compile("^_+");
-    private static final Pattern endsUnderscores = Pattern.compile("_+$");
+//    private static final Pattern unsafeChars = Pattern.compile("[^a-zA-Z0-9:_]");
+//    private static final Pattern multipleUnderscores = Pattern.compile("__+");
+//    private static final Pattern startsUnderscores = Pattern.compile("^_+");
+//    private static final Pattern endsUnderscores = Pattern.compile("_+$");
 
-    /**
-     * make safe name for metrics exposition format. See https://prometheus.io/docs/instrumenting/exposition_formats/
-     *
-     * @param name
-     * @return
-     */
-    public static String safeName(String name) {
-        String newName = startsUnderscores.matcher(endsUnderscores.matcher(multipleUnderscores.matcher(unsafeChars.matcher(name).replaceAll("_")).replaceAll("_")).replaceAll("")).replaceAll("");
-        return newName;
-    }
+//    /**
+//     * make safe name for metrics exposition format. See https://prometheus.io/docs/instrumenting/exposition_formats/
+//     *
+//     * @param name
+//     * @return
+//     */
+//    public static String safeName(String name) {
+//        String newName = startsUnderscores.matcher(endsUnderscores.matcher(multipleUnderscores.matcher(unsafeChars.matcher(name).replaceAll("_")).replaceAll("_")).replaceAll("")).replaceAll("");
+//        return newName;
+//    }
 
-    /**
-     *
-     * @param map
-     * @return
-     */
-    public static Map<String, Object> flatten(Map<String, Object> map) {
-        return flatten(map, ".");
-    }
+//    /**
+//     *
+//     * @param map
+//     * @return
+//     */
+//    public static Map<String, Object> flatten(Map<String, Object> map) {
+//        return flatten(map, ".");
+//    }
 
-    /**
-     *
-     * @param map
-     * @param delimiter
-     * @return
-     */
-    public static Map<String, Object> flatten(Map<String, Object> map, String delimiter) {
-        Map<String, Object> flattenMap = new LinkedHashMap<>();
+//    /**
+//     *
+//     * @param map
+//     * @param delimiter
+//     * @return
+//     */
+//    public static Map<String, Object> flatten(Map<String, Object> map, String delimiter) {
+//        Map<String, Object> flattenMap = new LinkedHashMap<>();
+//
+//        readObj(map, flattenMap, delimiter);
+//
+//        return flattenMap;
+//    }
 
-        readObj(map, flattenMap, delimiter);
+//    /**
+//     *
+//     * @param obj
+//     * @param flattenMap
+//     * @param delimiter
+//     */
+//    private static void readObj(Object obj, Map<String, Object> flattenMap, String delimiter) {
+//        readObj(obj, flattenMap, delimiter, new Stack<>());
+//    }
 
-        return flattenMap;
-    }
-
-    /**
-     *
-     * @param obj
-     * @param flattenMap
-     * @param delimiter
-     */
-    private static void readObj(Object obj, Map<String, Object> flattenMap, String delimiter) {
-        readObj(obj, flattenMap, delimiter, new Stack<>());
-    }
-
-    /**
-     *
-     * @param obj
-     * @param flattenMap
-     * @param delimiter
-     * @param stack
-     */
-    private static void readObj(Object obj, Map<String, Object> flattenMap, String delimiter, Stack<String> stack) {
-        try {
-            if (obj instanceof Map) {
-                for (Object key : ((Map) obj).keySet()) {
-                    stack.push(key.toString());
-                    readObj(((Map) obj).get(key), flattenMap, delimiter, stack);
-                }
-            } else if (obj instanceof List) {
-                for (int i = 0; ((List) obj).size() > i; i++) {
-                    Object key = String.valueOf(i);
-                    stack.push(key.toString());
-                    readObj(key, flattenMap, delimiter, stack);
-                }
-            } else {
-                String key = String.join(delimiter, stack.toArray(new String[0]));
-                flattenMap.put(key, obj);
-            }
-            if (!stack.isEmpty()) {
-                stack.pop();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    /**
+//     *
+//     * @param obj
+//     * @param flattenMap
+//     * @param delimiter
+//     * @param stack
+//     */
+//    private static void readObj(Object obj, Map<String, Object> flattenMap, String delimiter, Stack<String> stack) {
+//        try {
+//            if (obj instanceof Map) {
+//                for (Object key : ((Map) obj).keySet()) {
+//                    stack.push(key.toString());
+//                    readObj(((Map) obj).get(key), flattenMap, delimiter, stack);
+//                }
+//            } else if (obj instanceof List) {
+//                for (int i = 0; ((List) obj).size() > i; i++) {
+//                    Object key = String.valueOf(i);
+//                    stack.push(key.toString());
+//                    readObj(key, flattenMap, delimiter, stack);
+//                }
+//            } else {
+//                String key = String.join(delimiter, stack.toArray(new String[0]));
+//                flattenMap.put(key, obj);
+//            }
+//            if (!stack.isEmpty()) {
+//                stack.pop();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
