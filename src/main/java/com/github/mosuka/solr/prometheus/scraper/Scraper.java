@@ -37,6 +37,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Scraper
+ *
+ */
 public class Scraper {
     private static final Logger logger = LoggerFactory.getLogger(Scraper.class);
 

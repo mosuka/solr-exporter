@@ -22,6 +22,9 @@ import org.apache.solr.cloud.AbstractDistribZkTestBase;
 import org.apache.solr.cloud.SolrCloudTestCase;
 import org.junit.BeforeClass;
 
+/**
+ * Test base class.
+ */
 @ThreadLeakScope(ThreadLeakScope.Scope.NONE)
 public class ExporterTestBase extends SolrCloudTestCase {
     public static String COLLECTION = "collection1";

@@ -18,6 +18,10 @@ package com.github.mosuka.solr.prometheus.scraper.config;
 
 import java.util.*;
 
+/**
+ * QueryConfig
+ *
+ */
 public class QueryConfig implements Cloneable {
     private String collection = "";
     private String path = "";

@@ -21,6 +21,10 @@ import com.github.mosuka.solr.prometheus.scraper.config.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * CollectorConfig
+ *
+ */
 public class CollectorConfig {
     private ScraperConfig pingConfig = new ScraperConfig();
     private ScraperConfig metricsConfig = new ScraperConfig();

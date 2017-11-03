@@ -21,6 +21,9 @@ import org.junit.Test;
 
 import java.util.*;
 
+/**
+ * Unit test for QueryConfig.
+ */
 public class QueryConfigTest extends TestCase {
     @Test
     public void testQueryConfig() throws Exception {

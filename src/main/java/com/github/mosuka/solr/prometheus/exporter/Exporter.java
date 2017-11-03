@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  *
  */
 public class Exporter {
-    private static final Logger logger = LoggerFactory.getLogger(Collector.class);
+    private static final Logger logger = LoggerFactory.getLogger(Exporter.class);
 
     /**
      * -v, --version

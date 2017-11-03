@@ -19,6 +19,10 @@ package com.github.mosuka.solr.prometheus.scraper.config;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ScraperConfig
+ *
+ */
 public class ScraperConfig implements Cloneable {
     private QueryConfig queryConfig = new QueryConfig();
 

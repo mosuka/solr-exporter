@@ -93,7 +93,7 @@ public class ExporterTest extends ExporterTestBase {
 
     @Test
     public void testExecuteSolrCloud() throws Exception {
-        String configFile = "src/test/files/conf/config.yml";
+        String configFile = "conf/config.yml";
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
