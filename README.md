@@ -178,12 +178,12 @@ Json query has to output JSON in the following format.
 
 ```json
 {
-  name: "some_metric_name",
-  type: "gauge", 
-  help: "describe metric.",
-  label_names: ["label_name1", "label_name2"],
-  label_values: ["label_value1", "label_value2"],
-  value: 1.0
+  "name": "some_metric_name",
+  "type": "gauge", 
+  "help": "describe metric.",
+  "label_names": ["label_name1", "label_name2"],
+  "label_values": ["label_value1", "label_value2"],
+  "value": 1.0
 }
 ```
 
