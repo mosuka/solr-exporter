@@ -35,7 +35,7 @@ public class ScraperConfigTest extends TestCase {
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        ScraperConfig scraperConfig = collectorConfig.getPingConfig();
+        ScraperConfig scraperConfig = collectorConfig.getPing();
 
         assertNotNull(scraperConfig);
     }
@@ -46,7 +46,7 @@ public class ScraperConfigTest extends TestCase {
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        ScraperConfig scraperConfig = collectorConfig.getPingConfig();
+        ScraperConfig scraperConfig = collectorConfig.getPing();
 
         assertNotNull(scraperConfig.getJsonQueries());
     }
@@ -68,9 +68,9 @@ public class ScraperConfigTest extends TestCase {
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        ScraperConfig scraperConfig = collectorConfig.getPingConfig();
+        ScraperConfig scraperConfig = collectorConfig.getPing();
 
-        assertNotNull(scraperConfig.getQueryConfig());
+        assertNotNull(scraperConfig.getQuery());
     }
 
     @Test
@@ -79,8 +79,8 @@ public class ScraperConfigTest extends TestCase {
 
         ScraperConfig scraperConfig = new ScraperConfig();
 
-        scraperConfig.setQueryConfig(queryConfig);
+        scraperConfig.setQuery(queryConfig);
 
-        assertNotNull(scraperConfig.getQueryConfig());
+        assertNotNull(scraperConfig.getQuery());
     }
 }

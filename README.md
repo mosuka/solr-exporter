@@ -115,14 +115,14 @@ $ mvn test
 The configuration is in YAML. An example with all possible options:
 
 ```yaml
-pingConfig:
-  queryConfig:
+ping:
+  query:
     path: /admin/ping
   jsonQueries:
     - '.status | { name: "solr_ping_status", type: "gauge", help: "See following URL: http://lucene.apache.org/solr/guide/7_0/ping.html", label_names: [], label_values: [], value: (if . == "OK" then 1.0 else 0.0 end) }'
 
-metricsConfig:
-  queryConfig:
+metrics:
+  query:
     path: /admin/metrics
     params:
       - group: 'all'
@@ -134,8 +134,8 @@ metricsConfig:
 
 ...
 
-collectionsConfig:
-  queryConfig:
+collections:
+  query:
     path: /admin/collections
     params:
       - action: 'CLUSTERSTATUS'
@@ -144,8 +144,8 @@ collectionsConfig:
 
 ...
 
-queryConfigs:
-  - queryConfig:
+queries:
+  - query:
       collection: collection1
       path: /select
       params:
@@ -165,9 +165,33 @@ queryConfigs:
 ```
 
 
-| Name | Description |
-| --- | --- |
-| pingConfig | Scrape Ping response. See following URL: https://lucene.apache.org/solr/guide/7_0/ping.html |
-| metricsConfig | Scrape Metrics Reporting response. See following URL: https://lucene.apache.org/solr/guide/7_0/metrics-reporting.html |
-| collectionsConfig | Scrape Collections API response. See following URL: https://lucene.apache.org/solr/guide/7_0/collections-api.html |
-| queryConfigs | Scrape Search response. See following URL: https://lucene.apache.org/solr/guide/7_0/searching.html |
+Name        | Description
+----------- | ---
+ping        | Scrape Ping response. See following URL: [https://lucene.apache.org/solr/guide/7_0/ping.html](https://lucene.apache.org/solr/guide/7_0/ping.html).
+metrics     | Scrape Metrics Reporting response. See following URL: [https://lucene.apache.org/solr/guide/7_0/metrics-reporting.html](https://lucene.apache.org/solr/guide/7_0/metrics-reporting.html).
+collections | Scrape Collections API response. See following URL: [https://lucene.apache.org/solr/guide/7_0/collections-api.html](https://lucene.apache.org/solr/guide/7_0/collections-api.html)/
+queries     | Scrape Search response. See following URL: [https://lucene.apache.org/solr/guide/7_0/searching.html](https://lucene.apache.org/solr/guide/7_0/searching.html).
+query       | Specify the Solr query parameter. It should contains collection or core (optional), path, params.
+jsonQueries | Specify the Json queries to parse json response. For more details, see [https://stedolan.github.io/jq/manual/](https://stedolan.github.io/jq/manual/).
+
+Json query has to output JSON in the following format.
+
+```json
+{
+  name: "some_metric_name",
+  type: "gauge", 
+  help: "describe metric.",
+  label_names: ["label_name1", "label_name2"],
+  label_values: ["label_value1", "label_value2"],
+  value: 1.0
+}
+```
+
+Name         | Description
+------------ | ---
+name         | Metric name. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
+type         | Metric type. For more detauils, see [https://prometheus.io/docs/concepts/metric_types/](https://prometheus.io/docs/concepts/metric_types/).
+help         | Metric help. It must be metric description.
+label_names  | Metric label names. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
+label_values | Metric label values. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
+value        | Metric value. It must be Double type.

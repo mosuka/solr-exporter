@@ -44,7 +44,7 @@ public class CollectorConfigTest extends TestCase {
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        assertNotNull(collectorConfig.getPingConfig());
+        assertNotNull(collectorConfig.getPing());
     }
 
     @Test
@@ -55,9 +55,9 @@ public class CollectorConfigTest extends TestCase {
 
         ScraperConfig pingConfig = new ScraperConfig();
 
-        collectorConfig.setPingConfig(pingConfig);
+        collectorConfig.setPing(pingConfig);
 
-        assertNotNull(collectorConfig.getPingConfig());
+        assertNotNull(collectorConfig.getPing());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class CollectorConfigTest extends TestCase {
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        assertNotNull(collectorConfig.getMetricsConfig());
+        assertNotNull(collectorConfig.getMetrics());
     }
 
     @Test
@@ -77,9 +77,9 @@ public class CollectorConfigTest extends TestCase {
 
         ScraperConfig metricsConfig = new ScraperConfig();
 
-        collectorConfig.setMetricsConfig(metricsConfig);
+        collectorConfig.setMetrics(metricsConfig);
 
-        assertNotNull(collectorConfig.getMetricsConfig());
+        assertNotNull(collectorConfig.getMetrics());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class CollectorConfigTest extends TestCase {
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        assertNotNull(collectorConfig.getCollectionsConfig());
+        assertNotNull(collectorConfig.getCollections());
     }
 
     @Test
@@ -99,9 +99,9 @@ public class CollectorConfigTest extends TestCase {
 
         ScraperConfig collectionsConfig = new ScraperConfig();
 
-        collectorConfig.setCollectionsConfig(collectionsConfig);
+        collectorConfig.setCollections(collectionsConfig);
 
-        assertNotNull(collectorConfig.getCollectionsConfig());
+        assertNotNull(collectorConfig.getCollections());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class CollectorConfigTest extends TestCase {
 
         CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
 
-        assertNotNull(collectorConfig.getQueryConfigs());
+        assertNotNull(collectorConfig.getQueries());
     }
 
     @Test
@@ -121,8 +121,8 @@ public class CollectorConfigTest extends TestCase {
 
         List<ScraperConfig> queryConfigs = new ArrayList<>();
 
-        collectorConfig.setQueryConfigs(queryConfigs);
+        collectorConfig.setQueries(queryConfigs);
 
-        assertNotNull(collectorConfig.getQueryConfigs());
+        assertNotNull(collectorConfig.getQueries());
     }
 }

@@ -24,16 +24,16 @@ import java.util.List;
  *
  */
 public class ScraperConfig implements Cloneable {
-    private QueryConfig queryConfig = new QueryConfig();
+    private QueryConfig query = new QueryConfig();
 
     private List<String> jsonQueries = new ArrayList<>();
 
-    public QueryConfig getQueryConfig() {
-        return this.queryConfig;
+    public QueryConfig getQuery() {
+        return this.query;
     }
 
-    public void setQueryConfig(QueryConfig queryConfig) {
-        this.queryConfig = queryConfig;
+    public void setQuery(QueryConfig query) {
+        this.query = query;
     }
 
     public List<String> getJsonQueries() {
@@ -49,7 +49,7 @@ public class ScraperConfig implements Cloneable {
 
         try {
             scraperConfig = (ScraperConfig) super.clone();
-            scraperConfig.queryConfig = this.queryConfig.clone();
+            scraperConfig.query = this.query.clone();
             scraperConfig.jsonQueries = new ArrayList<>(this.jsonQueries);
         }catch (Exception e){
             e.printStackTrace();

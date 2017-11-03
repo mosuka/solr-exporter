@@ -55,7 +55,7 @@ public class Scraper {
         Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
         try {
-            QueryConfig queryConfig = scraperConfig.getQueryConfig();
+            QueryConfig queryConfig = scraperConfig.getQuery();
 
             // create Solr request parameters
             ModifiableSolrParams params = new ModifiableSolrParams();
@@ -101,9 +101,9 @@ public class Scraper {
                             labelValues.add(((CloudSolrClient) solrClient).getZkHost());
                         }
 
-                        if (scraperConfig.getQueryConfig().getCollection() != null && !scraperConfig.getQueryConfig().getCollection().equals("")) {
+                        if (scraperConfig.getQuery().getCollection() != null && !scraperConfig.getQuery().getCollection().equals("")) {
                             labelNames.add("collection");
-                            labelValues.add(scraperConfig.getQueryConfig().getCollection());
+                            labelValues.add(scraperConfig.getQuery().getCollection());
                         }
 
                         for(Iterator<JsonNode> i = result.get("label_names").iterator();i.hasNext();){

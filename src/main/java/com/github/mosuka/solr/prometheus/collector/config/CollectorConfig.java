@@ -26,40 +26,40 @@ import java.util.List;
  *
  */
 public class CollectorConfig {
-    private ScraperConfig pingConfig = new ScraperConfig();
-    private ScraperConfig metricsConfig = new ScraperConfig();
-    private ScraperConfig collectionsConfig = new ScraperConfig();
-    private List<ScraperConfig> queryConfigs = new ArrayList<>();
+    private ScraperConfig ping = new ScraperConfig();
+    private ScraperConfig metrics = new ScraperConfig();
+    private ScraperConfig collections = new ScraperConfig();
+    private List<ScraperConfig> queries = new ArrayList<>();
 
-    public ScraperConfig getPingConfig() {
-        return pingConfig;
+    public ScraperConfig getPing() {
+        return ping;
     }
 
-    public void setPingConfig(ScraperConfig pingConfig) {
-        this.pingConfig = pingConfig;
+    public void setPing(ScraperConfig ping) {
+        this.ping = ping;
     }
 
-    public ScraperConfig getMetricsConfig() {
-        return metricsConfig;
+    public ScraperConfig getMetrics() {
+        return metrics;
     }
 
-    public void setMetricsConfig(ScraperConfig metricsConfig) {
-        this.metricsConfig = metricsConfig;
+    public void setMetrics(ScraperConfig metrics) {
+        this.metrics = metrics;
     }
 
-    public ScraperConfig getCollectionsConfig() {
-        return collectionsConfig;
+    public ScraperConfig getCollections() {
+        return collections;
     }
 
-    public void setCollectionsConfig(ScraperConfig collectionsConfig) {
-        this.collectionsConfig = collectionsConfig;
+    public void setCollections(ScraperConfig collections) {
+        this.collections = collections;
     }
 
-    public List<ScraperConfig> getQueryConfigs() {
-        return queryConfigs;
+    public List<ScraperConfig> getQueries() {
+        return queries;
     }
 
-    public void setQueryConfigs(List<ScraperConfig> queryConfigs) {
-        this.queryConfigs = queryConfigs;
+    public void setQueries(List<ScraperConfig> queries) {
+        this.queries = queries;
     }
 }
