@@ -16,7 +16,7 @@
  */
 package com.github.mosuka.solr.prometheus.collector.config;
 
-import com.github.mosuka.solr.prometheus.scraper.config.ScraperConfig;
+import com.github.mosuka.solr.prometheus.scraper.config.SolrScraperConfig;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -26,14 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Unit test for CollectorConfig.
+ * Unit test for SolrCollectorConfig.
  */
 public class CollectorConfigTest extends TestCase {
     @Test
     public void testCollectorConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
         assertNotNull(collectorConfig);
     }
@@ -42,7 +42,7 @@ public class CollectorConfigTest extends TestCase {
     public void testGetPingConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
         assertNotNull(collectorConfig.getPing());
     }
@@ -51,9 +51,9 @@ public class CollectorConfigTest extends TestCase {
     public void testSetPingConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        ScraperConfig pingConfig = new ScraperConfig();
+        SolrScraperConfig pingConfig = new SolrScraperConfig();
 
         collectorConfig.setPing(pingConfig);
 
@@ -64,7 +64,7 @@ public class CollectorConfigTest extends TestCase {
     public void testGetMetricsConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
         assertNotNull(collectorConfig.getMetrics());
     }
@@ -73,9 +73,9 @@ public class CollectorConfigTest extends TestCase {
     public void testSetMetricsConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        ScraperConfig metricsConfig = new ScraperConfig();
+        SolrScraperConfig metricsConfig = new SolrScraperConfig();
 
         collectorConfig.setMetrics(metricsConfig);
 
@@ -86,7 +86,7 @@ public class CollectorConfigTest extends TestCase {
     public void testGetCollectionsConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
         assertNotNull(collectorConfig.getCollections());
     }
@@ -95,9 +95,9 @@ public class CollectorConfigTest extends TestCase {
     public void testSetCollectionsConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        ScraperConfig collectionsConfig = new ScraperConfig();
+        SolrScraperConfig collectionsConfig = new SolrScraperConfig();
 
         collectorConfig.setCollections(collectionsConfig);
 
@@ -108,7 +108,7 @@ public class CollectorConfigTest extends TestCase {
     public void testGetQueryConfigs() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
         assertNotNull(collectorConfig.getQueries());
     }
@@ -117,9 +117,9 @@ public class CollectorConfigTest extends TestCase {
     public void testSetQueryConfigs() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        List<ScraperConfig> queryConfigs = new ArrayList<>();
+        List<SolrScraperConfig> queryConfigs = new ArrayList<>();
 
         collectorConfig.setQueries(queryConfigs);
 

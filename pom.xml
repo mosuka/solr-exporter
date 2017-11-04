@@ -19,7 +19,7 @@
 
   <groupId>com.github.mosuka.solr.prometheus.exporter</groupId>
   <artifactId>solr-exporter</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <build>
     <plugins>
       <plugin>
@@ -44,7 +44,7 @@
           <extraJvmArguments>-Xmx512m -Dlog4j.configuration=file:$BASEDIR/resources/log4j.properties</extraJvmArguments>
           <programs>
             <program>
-              <mainClass>com.github.mosuka.solr.prometheus.exporter.Exporter</mainClass>
+              <mainClass>com.github.mosuka.solr.prometheus.exporter.SolrExporter</mainClass>
               <name>solr-exporter</name>
             </program>
           </programs>

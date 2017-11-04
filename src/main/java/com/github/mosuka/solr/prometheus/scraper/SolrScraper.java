@@ -18,8 +18,8 @@ package com.github.mosuka.solr.prometheus.scraper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.mosuka.solr.prometheus.scraper.config.QueryConfig;
-import com.github.mosuka.solr.prometheus.scraper.config.ScraperConfig;
+import com.github.mosuka.solr.prometheus.scraper.config.SolrQueryConfig;
+import com.github.mosuka.solr.prometheus.scraper.config.SolrScraperConfig;
 import io.prometheus.client.Collector;
 import io.prometheus.client.GaugeMetricFamily;
 import net.thisptr.jackson.jq.JsonQuery;
@@ -36,13 +36,37 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 /**
- * Scraper
+ * SolrScraper
  *
  */
-public class Scraper {
-    private static final Logger logger = LoggerFactory.getLogger(Scraper.class);
+public class SolrScraper implements Callable<Map<String, Collector.MetricFamilySamples>> {
+    private static final Logger logger = LoggerFactory.getLogger(SolrScraper.class);
+
+    private SolrClient solrClient;
+    private SolrScraperConfig scraperConfig;
+
+    /**
+     *
+     */
+    public SolrScraper(SolrClient solrClient, SolrScraperConfig scraperConfig) {
+        super();
+
+        this.solrClient = solrClient;
+        this.scraperConfig = scraperConfig;
+    }
+
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map<String, Collector.MetricFamilySamples> call() throws Exception {
+        return collectResponse(this.solrClient, this.scraperConfig);
+    }
 
     /**
      * Collect facet count.
@@ -51,11 +75,11 @@ public class Scraper {
      * @param scraperConfig
      * @return
      */
-    public Map<String, Collector.MetricFamilySamples> collectResponse(SolrClient solrClient, ScraperConfig scraperConfig) {
+    public Map<String, Collector.MetricFamilySamples> collectResponse(SolrClient solrClient, SolrScraperConfig scraperConfig) {
         Map<String, Collector.MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
         try {
-            QueryConfig queryConfig = scraperConfig.getQuery();
+            SolrQueryConfig queryConfig = scraperConfig.getQuery();
 
             // create Solr request parameters
             ModifiableSolrParams params = new ModifiableSolrParams();

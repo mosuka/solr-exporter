@@ -22,44 +22,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CollectorConfig
+ * SolrCollectorConfig
  *
  */
-public class CollectorConfig {
-    private ScraperConfig ping = new ScraperConfig();
-    private ScraperConfig metrics = new ScraperConfig();
-    private ScraperConfig collections = new ScraperConfig();
-    private List<ScraperConfig> queries = new ArrayList<>();
+public class SolrCollectorConfig {
+    private SolrScraperConfig ping = new SolrScraperConfig();
+    private SolrScraperConfig metrics = new SolrScraperConfig();
+    private SolrScraperConfig collections = new SolrScraperConfig();
+    private List<SolrScraperConfig> queries = new ArrayList<>();
 
-    public ScraperConfig getPing() {
+    public SolrScraperConfig getPing() {
         return ping;
     }
 
-    public void setPing(ScraperConfig ping) {
+    public void setPing(SolrScraperConfig ping) {
         this.ping = ping;
     }
 
-    public ScraperConfig getMetrics() {
+    public SolrScraperConfig getMetrics() {
         return metrics;
     }
 
-    public void setMetrics(ScraperConfig metrics) {
+    public void setMetrics(SolrScraperConfig metrics) {
         this.metrics = metrics;
     }
 
-    public ScraperConfig getCollections() {
+    public SolrScraperConfig getCollections() {
         return collections;
     }
 
-    public void setCollections(ScraperConfig collections) {
+    public void setCollections(SolrScraperConfig collections) {
         this.collections = collections;
     }
 
-    public List<ScraperConfig> getQueries() {
+    public List<SolrScraperConfig> getQueries() {
         return queries;
     }
 
-    public void setQueries(List<ScraperConfig> queries) {
+    public void setQueries(List<SolrScraperConfig> queries) {
         this.queries = queries;
     }
 }

@@ -20,19 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ScraperConfig
+ * SolrScraperConfig
  *
  */
-public class ScraperConfig implements Cloneable {
-    private QueryConfig query = new QueryConfig();
-
+public class SolrScraperConfig implements Cloneable {
+    private SolrQueryConfig query = new SolrQueryConfig();
     private List<String> jsonQueries = new ArrayList<>();
 
-    public QueryConfig getQuery() {
+    public SolrQueryConfig getQuery() {
         return this.query;
     }
 
-    public void setQuery(QueryConfig query) {
+    public void setQuery(SolrQueryConfig query) {
         this.query = query;
     }
 
@@ -44,11 +43,11 @@ public class ScraperConfig implements Cloneable {
         this.jsonQueries = jsonQueries;
     }
 
-    public ScraperConfig clone() throws CloneNotSupportedException {
-        ScraperConfig scraperConfig = null;
+    public SolrScraperConfig clone() throws CloneNotSupportedException {
+        SolrScraperConfig scraperConfig = null;
 
         try {
-            scraperConfig = (ScraperConfig) super.clone();
+            scraperConfig = (SolrScraperConfig) super.clone();
             scraperConfig.query = this.query.clone();
             scraperConfig.jsonQueries = new ArrayList<>(this.jsonQueries);
         }catch (Exception e){

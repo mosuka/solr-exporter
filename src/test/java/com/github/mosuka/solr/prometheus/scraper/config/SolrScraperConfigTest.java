@@ -16,7 +16,7 @@
  */
 package com.github.mosuka.solr.prometheus.scraper.config;
 
-import com.github.mosuka.solr.prometheus.collector.config.CollectorConfig;
+import com.github.mosuka.solr.prometheus.collector.config.SolrCollectorConfig;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -26,16 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Unit test for ScraperConfig.
+ * Unit test for SolrScraperConfig.
  */
-public class ScraperConfigTest extends TestCase {
+public class SolrScraperConfigTest extends TestCase {
     @Test
     public void testScraperConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig config = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        ScraperConfig scraperConfig = collectorConfig.getPing();
+        SolrScraperConfig scraperConfig = config.getPing();
 
         assertNotNull(scraperConfig);
     }
@@ -44,9 +44,9 @@ public class ScraperConfigTest extends TestCase {
     public void testGetJsonQueries() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        ScraperConfig scraperConfig = collectorConfig.getPing();
+        SolrScraperConfig scraperConfig = collectorConfig.getPing();
 
         assertNotNull(scraperConfig.getJsonQueries());
     }
@@ -55,7 +55,7 @@ public class ScraperConfigTest extends TestCase {
     public void testSetJsonQueries() throws Exception {
         List<String> jsonQueries = new ArrayList<>();
 
-        ScraperConfig scraperConfig = new ScraperConfig();
+        SolrScraperConfig scraperConfig = new SolrScraperConfig();
 
         scraperConfig.setJsonQueries(jsonQueries);
 
@@ -66,18 +66,18 @@ public class ScraperConfigTest extends TestCase {
     public void testGetQueryConfig() throws Exception {
         String configFile = "conf/config.yml";
 
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        ScraperConfig scraperConfig = collectorConfig.getPing();
+        SolrScraperConfig scraperConfig = collectorConfig.getPing();
 
         assertNotNull(scraperConfig.getQuery());
     }
 
     @Test
     public void testSetQueryConfig() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
-        ScraperConfig scraperConfig = new ScraperConfig();
+        SolrScraperConfig scraperConfig = new SolrScraperConfig();
 
         scraperConfig.setQuery(queryConfig);
 

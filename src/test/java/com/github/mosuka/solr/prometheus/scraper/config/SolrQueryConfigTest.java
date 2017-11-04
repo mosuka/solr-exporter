@@ -22,19 +22,19 @@ import org.junit.Test;
 import java.util.*;
 
 /**
- * Unit test for QueryConfig.
+ * Unit test for SolrQueryConfig.
  */
-public class QueryConfigTest extends TestCase {
+public class SolrQueryConfigTest extends TestCase {
     @Test
     public void testQueryConfig() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         assertNotNull(queryConfig);
     }
 
     @Test
     public void testGetCollection() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         String expected = "";
         String actual = queryConfig.getCollection();
@@ -43,7 +43,7 @@ public class QueryConfigTest extends TestCase {
 
     @Test
     public void testSetCollection() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         queryConfig.setCollection("collection1");
 
@@ -54,7 +54,7 @@ public class QueryConfigTest extends TestCase {
 
     @Test
     public void testGetPath() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         String expected = "";
         String actual = queryConfig.getPath();
@@ -63,7 +63,7 @@ public class QueryConfigTest extends TestCase {
 
     @Test
     public void testSetPath() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         queryConfig.setPath("/select");
 
@@ -74,7 +74,7 @@ public class QueryConfigTest extends TestCase {
 
     @Test
     public void testGetParams() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         List<LinkedHashMap<String, String>> expected = new ArrayList<>();
         List<LinkedHashMap<String, String>> actual = queryConfig.getParams();
@@ -83,7 +83,7 @@ public class QueryConfigTest extends TestCase {
 
     @Test
     public void testSetParams() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         LinkedHashMap<String,String> param1 = new LinkedHashMap<>();
         param1.put("q", "*:*");
@@ -100,7 +100,7 @@ public class QueryConfigTest extends TestCase {
 
     @Test
     public void testGetParamsString() throws Exception {
-        QueryConfig queryConfig = new QueryConfig();
+        SolrQueryConfig queryConfig = new SolrQueryConfig();
 
         LinkedHashMap<String,String> param1 = new LinkedHashMap<>();
         param1.put("q", "*:*");

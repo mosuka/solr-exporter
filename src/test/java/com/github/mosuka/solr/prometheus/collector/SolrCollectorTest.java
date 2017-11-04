@@ -16,28 +16,25 @@
  */
 package com.github.mosuka.solr.prometheus.collector;
 
-import com.github.mosuka.solr.prometheus.collector.config.CollectorConfig;
-import com.github.mosuka.solr.prometheus.exporter.ExporterTestBase;
+import com.github.mosuka.solr.prometheus.collector.config.SolrCollectorConfig;
+import com.github.mosuka.solr.prometheus.exporter.SolrExporterTestBase;
 import io.prometheus.client.CollectorRegistry;
 import org.apache.lucene.util.LuceneTestCase.Slow;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
-import org.apache.solr.client.solrj.response.QueryResponse;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * Unit test for Collector.
+ * Unit test for SolrCollector.
  */
 @Slow
-public class CollectorTest extends ExporterTestBase {
+public class SolrCollectorTest extends SolrExporterTestBase {
     CollectorRegistry registry;
 
     @Override
@@ -56,9 +53,9 @@ public class CollectorTest extends ExporterTestBase {
         String configFile = "conf/config.yml";
 
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        Collector collector = new Collector(cloudSolrClient, collectorConfig);
+        SolrCollector collector = new SolrCollector(cloudSolrClient, collectorConfig, 1);
 
         assertNotNull(collector);
 
@@ -69,9 +66,9 @@ public class CollectorTest extends ExporterTestBase {
         String configFile = "conf/config.yml";
 
         CloudSolrClient cloudSolrClient = cluster.getSolrClient();
-        CollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), CollectorConfig.class);
+        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        Collector collector = new Collector(cloudSolrClient, collectorConfig);
+        SolrCollector collector = new SolrCollector(cloudSolrClient, collectorConfig, 1);
         collector.register(registry);
 
         // index sample docs

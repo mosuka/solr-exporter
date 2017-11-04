@@ -19,10 +19,10 @@ package com.github.mosuka.solr.prometheus.scraper.config;
 import java.util.*;
 
 /**
- * QueryConfig
+ * SolrQueryConfig
  *
  */
-public class QueryConfig implements Cloneable {
+public class SolrQueryConfig implements Cloneable {
     private String collection = "";
     private String path = "";
     private List<LinkedHashMap<String, String>> params = new ArrayList<>();
@@ -71,11 +71,11 @@ public class QueryConfig implements Cloneable {
         return buffer.toString();
     }
 
-    public QueryConfig clone() throws CloneNotSupportedException {
-        QueryConfig queryConfig = null;
+    public SolrQueryConfig clone() throws CloneNotSupportedException {
+        SolrQueryConfig queryConfig = null;
 
         try {
-            queryConfig = (QueryConfig) super.clone();
+            queryConfig = (SolrQueryConfig) super.clone();
             queryConfig.collection = this.collection;
             queryConfig.params = new ArrayList<>(this.params);
         }catch (Exception e){
