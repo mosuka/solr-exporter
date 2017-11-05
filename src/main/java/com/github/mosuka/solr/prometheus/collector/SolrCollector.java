@@ -104,10 +104,6 @@ public class SolrCollector extends Collector implements Collector.Describable {
             // Ping
             if (config.getPing() != null) {
                 if (solrClient instanceof CloudSolrClient) {
-                    SolrScraper scraper = new SolrScraper(solrClient, config.getPing());
-                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
-                    futureList.add(future);
-                } else {
                     for (HttpSolrClient httpSolrClient : httpSolrClients) {
                         if (config.getPing().getQuery().getCollection().equals("")) {
                             try {
@@ -132,6 +128,10 @@ public class SolrCollector extends Collector implements Collector.Describable {
                             futureList.add(future);
                         }
                     }
+                } else {
+                    SolrScraper scraper = new SolrScraper(solrClient, config.getPing());
+                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                    futureList.add(future);
                 }
             }
 
@@ -179,11 +179,6 @@ public class SolrCollector extends Collector implements Collector.Describable {
                 } catch (IOException e) {
                     logger.error(e.getMessage());
                 }
-            }
-            try {
-                solrClient.close();
-            } catch (IOException e) {
-                logger.error(e.getMessage());
             }
         }
 
