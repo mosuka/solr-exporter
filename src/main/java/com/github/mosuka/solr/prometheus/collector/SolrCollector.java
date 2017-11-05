@@ -129,24 +129,43 @@ public class SolrCollector extends Collector implements Collector.Describable {
                         }
                     }
                 } else {
-                    SolrScraper scraper = new SolrScraper(solrClient, config.getPing());
-                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
-                    futureList.add(future);
+                    if (config.getPing().getQuery().getCollection().equals("")) {
+                        try {
+                            for (String core : getCores((HttpSolrClient) solrClient)) {
+                                try {
+                                    SolrScraperConfig pingConfig = config.getPing().clone();
+                                    pingConfig.getQuery().setCollection(core);
+
+                                    SolrScraper scraper = new SolrScraper(solrClient, pingConfig);
+                                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                                    futureList.add(future);
+                                } catch (CloneNotSupportedException e) {
+                                    logger.error(e.getMessage());
+                                }
+                            }
+                        } catch (SolrServerException | IOException e) {
+                            logger.error(e.getMessage());
+                        }
+                    } else {
+                        SolrScraper scraper = new SolrScraper(solrClient, config.getPing());
+                        Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                        futureList.add(future);
+                    }
                 }
             }
 
             // Metrics
             if (config.getMetrics() != null) {
                 if (solrClient instanceof CloudSolrClient) {
-                    SolrScraper scraper = new SolrScraper(solrClient, config.getMetrics());
-                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
-                    futureList.add(future);
-                } else {
                     for (HttpSolrClient httpSolrClient : httpSolrClients) {
                         SolrScraper scraper = new SolrScraper(httpSolrClient, config.getPing());
                         Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
                         futureList.add(future);
                     }
+                } else {
+                    SolrScraper scraper = new SolrScraper(solrClient, config.getMetrics());
+                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                    futureList.add(future);
                 }
             }
 
