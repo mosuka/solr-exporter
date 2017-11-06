@@ -23,9 +23,18 @@ import java.util.*;
  *
  */
 public class SolrQueryConfig implements Cloneable {
+    private String core = "";
     private String collection = "";
     private String path = "";
     private List<LinkedHashMap<String, String>> params = new ArrayList<>();
+
+    public String getCore() {
+        return core;
+    }
+
+    public void setCore(String core) {
+        this.core = core;
+    }
 
     public String getCollection() {
         return collection;
@@ -77,7 +86,7 @@ public class SolrQueryConfig implements Cloneable {
         try {
             queryConfig = (SolrQueryConfig) super.clone();
             queryConfig.collection = this.collection;
-            queryConfig.params = new ArrayList<>(this.params);
+            queryConfig.setParams(new ArrayList<>(this.params));
         }catch (Exception e){
             e.printStackTrace();
         }

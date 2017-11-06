@@ -21,7 +21,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mosuka.solr.prometheus.scraper.config.SolrQueryConfig;
 import com.github.mosuka.solr.prometheus.scraper.config.SolrScraperConfig;
 import io.prometheus.client.Collector;
+import io.prometheus.client.CounterMetricFamily;
 import io.prometheus.client.GaugeMetricFamily;
+import io.prometheus.client.Histogram;
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 import org.apache.solr.client.solrj.SolrClient;
@@ -99,14 +101,23 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
             queryRequest.setPath(queryConfig.getPath());
 
             // invoke Solr
-            NamedList<Object> queryResponse = queryConfig.getCollection().isEmpty() ? solrClient.request(queryRequest) : solrClient.request(queryRequest, queryConfig.getCollection());
+//            NamedList<Object> queryResponse = queryConfig.getCollection().isEmpty() ? solrClient.request(queryRequest) : solrClient.request(queryRequest, queryConfig.getCollection());
+
+            NamedList<Object> queryResponse = null;
+            if (queryConfig.getCore().equals("") && queryConfig.getCollection().equals("")) {
+                queryResponse = solrClient.request(queryRequest);
+            } else if (!queryConfig.getCore().equals("")) {
+                queryResponse = solrClient.request(queryRequest, queryConfig.getCore());
+            } else if (!queryConfig.getCollection().equals("")) {
+                queryResponse = solrClient.request(queryRequest, queryConfig.getCollection());
+            }
 
             ObjectMapper om = new ObjectMapper();
             JsonNode metricsJson = om.readTree((String) queryResponse.get("response"));
 
-            for (String jq : scraperConfig.getJsonQueries()) {
+            for (int i = 0; i < scraperConfig.getCompiledJsonQueries().size(); i++) {
+                JsonQuery q = scraperConfig.getCompiledJsonQueries().get(i);
                 try {
-                    JsonQuery q = JsonQuery.compile(jq);
                     List<JsonNode> results = q.apply(metricsJson);
                     for (JsonNode result : results) {
                         String type = result.get("type").textValue();
@@ -125,17 +136,22 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
                             labelValues.add(((CloudSolrClient) solrClient).getZkHost());
                         }
 
-                        if (scraperConfig.getQuery().getCollection() != null && !scraperConfig.getQuery().getCollection().equals("")) {
+                        if (!scraperConfig.getQuery().getCore().equals("")) {
+                            labelNames.add("core");
+                            labelValues.add(scraperConfig.getQuery().getCore());
+                        }
+
+                        if (!scraperConfig.getQuery().getCollection().equals("")) {
                             labelNames.add("collection");
                             labelValues.add(scraperConfig.getQuery().getCollection());
                         }
 
-                        for(Iterator<JsonNode> i = result.get("label_names").iterator();i.hasNext();){
-                            JsonNode item = i.next();
+                        for(Iterator<JsonNode> ite = result.get("label_names").iterator();ite.hasNext();){
+                            JsonNode item = ite.next();
                             labelNames.add(item.textValue());
                         }
-                        for(Iterator<JsonNode> i = result.get("label_values").iterator();i.hasNext();){
-                            JsonNode item = i.next();
+                        for(Iterator<JsonNode> ite = result.get("label_values").iterator();ite.hasNext();){
+                            JsonNode item = ite.next();
                             labelValues.add(item.textValue());
                         }
 
@@ -146,6 +162,17 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
                                         help,
                                         labelNames);
                                 metricFamilySamplesMap.put(name, gauge);
+                            } else if (type.equals("counter")) {
+                                CounterMetricFamily counter = new CounterMetricFamily(
+                                        name,
+                                        help,
+                                        labelNames
+                                );
+                                metricFamilySamplesMap.put(name, counter);
+                            } else if (type.equals("histogram")) {
+                                // TODO
+                            } else if (type.equals("summary")) {
+                                // TODO
                             }
                         }
 
@@ -156,7 +183,7 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
                         }
                     }
                 } catch (JsonQueryException e) {
-                    logger.error(e.toString() + " " + jq);
+                    logger.error(e.toString() + " " + q.toString());
                 } finally {
                 }
             }
@@ -164,7 +191,6 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
             logger.error(e.toString());
         } catch (Exception e) {
             logger.error(e.toString());
-        } finally {
         }
 
         return metricFamilySamplesMap;

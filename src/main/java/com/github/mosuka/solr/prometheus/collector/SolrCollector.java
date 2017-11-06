@@ -105,12 +105,12 @@ public class SolrCollector extends Collector implements Collector.Describable {
             if (config.getPing() != null) {
                 if (solrClient instanceof CloudSolrClient) {
                     for (HttpSolrClient httpSolrClient : httpSolrClients) {
-                        if (config.getPing().getQuery().getCollection().equals("")) {
+                        if (config.getPing().getQuery().getCore().equals("")) {
                             try {
                                 for (String core : getCores(httpSolrClient)) {
                                     try {
                                         SolrScraperConfig pingConfig = config.getPing().clone();
-                                        pingConfig.getQuery().setCollection(core);
+                                        pingConfig.getQuery().setCore(core);
 
                                         SolrScraper scraper = new SolrScraper(httpSolrClient, pingConfig);
                                         Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
@@ -128,13 +128,33 @@ public class SolrCollector extends Collector implements Collector.Describable {
                             futureList.add(future);
                         }
                     }
+
+                    try {
+                        for (String collection : getCollections((CloudSolrClient) solrClient)) {
+                            try {
+                                SolrScraperConfig pingConfig = config.getPing().clone();
+                                pingConfig.getQuery().setCollection(collection);
+                                LinkedHashMap<String, String> distribParam = new LinkedHashMap<>();
+                                distribParam.put("distrib", "true");
+                                pingConfig.getQuery().getParams().add(distribParam);
+
+                                SolrScraper scraper = new SolrScraper(solrClient, pingConfig);
+                                Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                                futureList.add(future);
+                            } catch (CloneNotSupportedException e) {
+                                logger.error(e.getMessage());
+                            }
+                        }
+                    } catch (SolrServerException | IOException e) {
+                        logger.error(e.getMessage());
+                    }
                 } else {
-                    if (config.getPing().getQuery().getCollection().equals("")) {
+                    if (config.getPing().getQuery().getCore().equals("")) {
                         try {
                             for (String core : getCores((HttpSolrClient) solrClient)) {
                                 try {
                                     SolrScraperConfig pingConfig = config.getPing().clone();
-                                    pingConfig.getQuery().setCollection(core);
+                                    pingConfig.getQuery().setCore(core);
 
                                     SolrScraper scraper = new SolrScraper(solrClient, pingConfig);
                                     Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
@@ -232,7 +252,6 @@ public class SolrCollector extends Collector implements Collector.Describable {
      * @return
      */
     private Map<String, MetricFamilySamples> mergeMetrics(Map<String, MetricFamilySamples> metrics1, Map<String, MetricFamilySamples> metrics2) {
-
         // marge MetricFamilySamples
         for (String k : metrics2.keySet()) {
             if (metrics1.containsKey(k)) {
@@ -280,6 +299,36 @@ public class SolrCollector extends Collector implements Collector.Describable {
         }
 
         return cores;
+    }
+
+    /**
+     * Get target cores via CollectionsAPI.
+     *
+     * @param cloudSolrClient
+     * @return
+     */
+    public static List<String> getCollections(CloudSolrClient cloudSolrClient) throws SolrServerException, IOException {
+        List<String> collections = new ArrayList<>();
+
+        NoOpResponseParser responseParser = new NoOpResponseParser();
+        responseParser.setWriterType("json");
+
+        cloudSolrClient.setParser(responseParser);
+
+        CollectionAdminRequest collectionAdminRequest = new CollectionAdminRequest.List();
+
+        NamedList<Object> collectionAdminResponse = cloudSolrClient.request(collectionAdminRequest);
+
+        JsonNode collectionsJsonNode = om.readTree((String) collectionAdminResponse.get("response")).get("collections");
+
+        for (Iterator<JsonNode> i = collectionsJsonNode.iterator(); i.hasNext(); ) {
+            String collection = i.next().textValue();
+            if (!collections.contains(collection)) {
+                collections.add(collection);
+            }
+        }
+
+        return collections;
     }
 
     /**
