@@ -60,19 +60,44 @@ Once extracted, you are now ready to run solr-exporter using the instructions pr
 You can start solr-exporter by running `./bin/solr-exporter` from the solr-exporter directory.
 
 ```text
-$ ./bin/solr-exporter -p 9983 -b http://localhost:8983/solr -c ./conf/config.yml
+$ ./bin/solr-exporter -p 9983 -b http://localhost:8983/solr -f ./conf/config.yml
 ```
 
 If you are on Windows platform, you can start solr-exporter by running `.\bin\solr-exporter.bat` instead.
 
 ```text
-> .\bin\solr-exporter.bat -p 9983 -b http://localhost:8983/solr -c .\conf\config.yml
+> .\bin\solr-exporter.bat -p 9983 -b http://localhost:8983/solr -f .\conf\config.yml
 ```
 
 You can also connect to Solr in SolrCloud mode like this.
 
 ```text
-$ ./bin/solr-exporter -p 9983 -z localhost:2181/solr -c ./conf/config.yml
+$ ./bin/solr-exporter -p 9983 -z localhost:2181/solr -f ./conf/config.yml
+```
+
+See command help:
+
+```text
+$ ./bin/solr-exporter -h
+usage: SolrCollector [-h] [-v] [-p PORT] [-b BASE_URL] [-z ZK_HOST] [-f CONFIG]
+                     [-n NUM_THREADS]
+
+Prometheus exporter for Apache Solr.
+
+optional arguments:
+  -h, --help             show this help message and exit
+  -v, --version          Show version.
+  -p PORT, --port PORT   solr-exporter listen port.
+  -b BASE_URL, --baseurl BASE_URL
+                         Specify Solr base URL when connecting  to Solr in standalone mode (for
+                         example 'http://localhost:8983/solr').
+  -z ZK_HOST, --zkhost ZK_HOST
+                         Specify  ZooKeeper  connection  string  when  connecting  to  Solr  in
+                         SolrCloud mode (for example 'localhost:2181/solr').
+  -f CONFIG, --config-file CONFIG
+                         Configuration file.
+  -n NUM_THREADS, --num-thread NUM_THREADS
+                         Number of threads.
 ```
 
 ## Building from source

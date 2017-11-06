@@ -69,13 +69,22 @@ public class SolrExporter {
     private static final String ARG_PORT_HELP = "solr-exporter listen port.";
 
     /**
-     * -c, --conn
+     * -b, --baseurl
      */
-    private static final String[] ARG_CONN_STR_FLAGS = { "-c", "--conn" };
-    private static final String ARG_CONN_STR_METAVAR = "CONN_STR";
-    private static final String ARG_CONN_STR_DEST = "connStr";
-    private static final String ARG_CONN_STR_DEFAULT = "";
-    private static final String ARG_CONN_STR_HELP = "Specify Solr base URL when connecting to Solr in standalone mode (for example 'http://localhost:8983/solr'). If connect to Solr in SolrCloud mode, specify ZooKeeper connection string (for example 'localhost:2181/solr').";
+    private static final String[] ARG_BASE_URL_FLAGS = { "-b", "--baseurl" };
+    private static final String ARG_BASE_URL_METAVAR = "BASE_URL";
+    private static final String ARG_BASE_URL_DEST = "baseUrl";
+    private static final String ARG_BASE_URL_DEFAULT = "";
+    private static final String ARG_BASE_URL_HELP = "Specify Solr base URL when connecting to Solr in standalone mode (for example 'http://localhost:8983/solr').";
+
+    /**
+     * -z, --zkhost
+     */
+    private static final String[] ARG_ZK_HOST_FLAGS = { "-z", "--zkhost" };
+    private static final String ARG_ZK_HOST_METAVAR = "ZK_HOST";
+    private static final String ARG_ZK_HOST_DEST = "zkHost";
+    private static final String ARG_ZK_HOST_DEFAULT = "";
+    private static final String ARG_ZK_HOST_HELP = "Specify ZooKeeper connection string when connecting to Solr in SolrCloud mode (for example 'localhost:2181/solr').";
 
     /**
      * -f, --config-file
@@ -245,9 +254,13 @@ public class SolrExporter {
                 .metavar(ARG_PORT_METAVAR).dest(ARG_PORT_DEST).type(Integer.class)
                 .setDefault(ARG_PORT_DEFAULT).help(ARG_PORT_HELP);
 
-        parser.addArgument(ARG_CONN_STR_FLAGS)
-                .metavar(ARG_CONN_STR_METAVAR).dest(ARG_CONN_STR_DEST).type(String.class)
-                .setDefault(ARG_CONN_STR_DEFAULT).help(ARG_CONN_STR_HELP);
+        parser.addArgument(ARG_BASE_URL_FLAGS)
+                .metavar(ARG_BASE_URL_METAVAR).dest(ARG_BASE_URL_DEST).type(String.class)
+                .setDefault(ARG_BASE_URL_DEFAULT).help(ARG_BASE_URL_HELP);
+
+        parser.addArgument(ARG_ZK_HOST_FLAGS)
+                .metavar(ARG_ZK_HOST_METAVAR).dest(ARG_ZK_HOST_DEST).type(String.class)
+                .setDefault(ARG_ZK_HOST_DEFAULT).help(ARG_ZK_HOST_HELP);
 
         parser.addArgument(ARG_CONFIG_FLAGS)
                 .metavar(ARG_CONFIG_METAVAR).dest(ARG_CONFIG_DEST).type(String.class)
@@ -261,7 +274,7 @@ public class SolrExporter {
             Namespace res = parser.parseArgs(args);
 
             int port = res.getInt(ARG_PORT_DEST);
-            String connStr = res.getString(ARG_CONN_STR_DEST);
+            String connStr = !res.getString(ARG_BASE_URL_DEST).equals("") ? res.getString(ARG_BASE_URL_DEST) : res.getString(ARG_ZK_HOST_DEST);
             File configFile = new File(res.getString(ARG_CONFIG_DEST));
             int numThreads = res.getInt(ARG_NUM_THREADS_DEST);
 
