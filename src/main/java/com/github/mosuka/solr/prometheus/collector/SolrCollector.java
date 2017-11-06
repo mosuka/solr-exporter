@@ -158,7 +158,7 @@ public class SolrCollector extends Collector implements Collector.Describable {
             if (config.getMetrics() != null) {
                 if (solrClient instanceof CloudSolrClient) {
                     for (HttpSolrClient httpSolrClient : httpSolrClients) {
-                        SolrScraper scraper = new SolrScraper(httpSolrClient, config.getPing());
+                        SolrScraper scraper = new SolrScraper(httpSolrClient, config.getMetrics());
                         Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
                         futureList.add(future);
                     }
@@ -170,17 +170,21 @@ public class SolrCollector extends Collector implements Collector.Describable {
             }
 
             // Collections
-            if (solrClient instanceof CloudSolrClient) {
-                SolrScraper scraper = new SolrScraper(solrClient, config.getCollections());
-                Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
-                futureList.add(future);
+            if (config.getCollections() != null) {
+                if (solrClient instanceof CloudSolrClient) {
+                    SolrScraper scraper = new SolrScraper(solrClient, config.getCollections());
+                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                    futureList.add(future);
+                }
             }
 
             // Query
-            for (SolrScraperConfig c : config.getQueries()) {
-                SolrScraper scraper = new SolrScraper(solrClient, c);
-                Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
-                futureList.add(future);
+            if (config.getQueries() != null) {
+                for (SolrScraperConfig c : config.getQueries()) {
+                    SolrScraper scraper = new SolrScraper(solrClient, c);
+                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                    futureList.add(future);
+                }
             }
 
             // get future
