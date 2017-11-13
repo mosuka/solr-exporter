@@ -35,7 +35,7 @@ public class SolrScraperConfigTest extends TestCase {
 
         SolrCollectorConfig config = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        SolrScraperConfig scraperConfig = config.getPing();
+        SolrScraperConfig scraperConfig = config.getMetrics();
 
         assertNotNull(scraperConfig);
     }
@@ -46,7 +46,7 @@ public class SolrScraperConfigTest extends TestCase {
 
         SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        SolrScraperConfig scraperConfig = collectorConfig.getPing();
+        SolrScraperConfig scraperConfig = collectorConfig.getMetrics();
 
         assertNotNull(scraperConfig.getJsonQueries());
     }
@@ -68,7 +68,7 @@ public class SolrScraperConfigTest extends TestCase {
 
         SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
 
-        SolrScraperConfig scraperConfig = collectorConfig.getPing();
+        SolrScraperConfig scraperConfig = collectorConfig.getMetrics();
 
         assertNotNull(scraperConfig.getQuery());
     }

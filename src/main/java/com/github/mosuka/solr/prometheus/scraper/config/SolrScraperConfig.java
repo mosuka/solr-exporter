@@ -64,7 +64,7 @@ public class SolrScraperConfig implements Cloneable {
 
         try {
             scraperConfig = (SolrScraperConfig) super.clone();
-            scraperConfig.query = this.query.clone();
+            scraperConfig.setQuery(this.query.clone());
             scraperConfig.setJsonQueries(new ArrayList<>(this.jsonQueries));
         }catch (Exception e){
             e.printStackTrace();

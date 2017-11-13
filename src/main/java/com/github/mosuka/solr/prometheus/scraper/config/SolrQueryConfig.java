@@ -85,7 +85,8 @@ public class SolrQueryConfig implements Cloneable {
 
         try {
             queryConfig = (SolrQueryConfig) super.clone();
-            queryConfig.collection = this.collection;
+            queryConfig.setCore(new String(this.core));
+            queryConfig.setCollection(new String(this.collection));
             queryConfig.setParams(new ArrayList<>(this.params));
         }catch (Exception e){
             e.printStackTrace();

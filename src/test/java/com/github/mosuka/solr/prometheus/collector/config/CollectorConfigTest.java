@@ -39,28 +39,6 @@ public class CollectorConfigTest extends TestCase {
     }
 
     @Test
-    public void testGetPingConfig() throws Exception {
-        String configFile = "conf/config.yml";
-
-        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
-
-        assertNotNull(collectorConfig.getPing());
-    }
-
-    @Test
-    public void testSetPingConfig() throws Exception {
-        String configFile = "conf/config.yml";
-
-        SolrCollectorConfig collectorConfig = new Yaml().loadAs(new FileReader(configFile), SolrCollectorConfig.class);
-
-        SolrScraperConfig pingConfig = new SolrScraperConfig();
-
-        collectorConfig.setPing(pingConfig);
-
-        assertNotNull(collectorConfig.getPing());
-    }
-
-    @Test
     public void testGetMetricsConfig() throws Exception {
         String configFile = "conf/config.yml";
 

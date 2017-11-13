@@ -101,8 +101,6 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
             queryRequest.setPath(queryConfig.getPath());
 
             // invoke Solr
-//            NamedList<Object> queryResponse = queryConfig.getCollection().isEmpty() ? solrClient.request(queryRequest) : solrClient.request(queryRequest, queryConfig.getCollection());
-
             NamedList<Object> queryResponse = null;
             if (queryConfig.getCore().equals("") && queryConfig.getCollection().equals("")) {
                 queryResponse = solrClient.request(queryRequest);

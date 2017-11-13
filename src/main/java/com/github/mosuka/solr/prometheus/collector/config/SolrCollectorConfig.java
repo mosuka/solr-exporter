@@ -26,18 +26,9 @@ import java.util.List;
  *
  */
 public class SolrCollectorConfig {
-    private SolrScraperConfig ping = new SolrScraperConfig();
     private SolrScraperConfig metrics = new SolrScraperConfig();
     private SolrScraperConfig collections = new SolrScraperConfig();
     private List<SolrScraperConfig> queries = new ArrayList<>();
-
-    public SolrScraperConfig getPing() {
-        return ping;
-    }
-
-    public void setPing(SolrScraperConfig ping) {
-        this.ping = ping;
-    }
 
     public SolrScraperConfig getMetrics() {
         return metrics;
