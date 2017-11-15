@@ -2,6 +2,7 @@
 
 [Prometheus](https://prometheus.io) exporter for [Apache Solr](http://lucene.apache.org/solr/), written in Java.
 
+![solr-exporter-diagram](./solr-exporter-diagram.png "solr-exporter-diagram")
 
 ## Installing solr-exporter
 
