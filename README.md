@@ -7,7 +7,7 @@
 ## Installing solr-exporter
 
 solr-exporter is available from the release page at [https://github.com/mosuka/solr-exporter/releases](https://github.com/mosuka/solr-exporter/releases).  
-For all platform, download the `solr-exporter-<VERSION>.zip` file.  
+For all platform, download the `solr-exporter-<VERSION>-bin.zip` file.  
 When getting started, all you need to do is extract the solr-exporter distribution archive to a directory of your choosing.  
 To keep things simple for now, extract the solr-exporter distribution archive to your local home directory, for instance on Linux, do:
 
