@@ -88,12 +88,6 @@ $ mvn test
 The configuration is in YAML. An example with all possible options:
 
 ```yaml
-ping:
-  query:
-    path: /admin/ping
-  jsonQueries:
-    - '.status | { name: "solr_ping_status", type: "gauge", help: "See following URL: http://lucene.apache.org/solr/guide/7_0/ping.html", label_names: [], label_values: [], value: (if . == "OK" then 1.0 else 0.0 end) }'
-
 metrics:
   query:
     path: /admin/metrics
@@ -103,7 +97,19 @@ metrics:
       - prefix: ''
       - property: ''
   jsonQueries:
-    - '.metrics["solr.jetty"]["org.eclipse.jetty.server.handler.DefaultHandler.1xx-responses"] | { name: "solr_metrics_jetty_response_count",     type: "gauge", help: "See following URL: https://lucene.apache.org/solr/guide/7_0/metrics-reporting.html", label_names: ["status"], label_values: ["1xx"], value: .count }'
+    # solr_metrics_jetty_response_count
+    - |-
+      .metrics["solr.jetty"] | to_entries | .[] | select(.key | startswith("org.eclipse.jetty.server.handler.DefaultHandler")) | select(.key | endswith("xx-responses")) as $object |
+      $object.key | split(".") | last | split("-") | first as $status |
+      $object.value.count as $value |
+      {
+        name         : "solr_metrics_jetty_response_count",
+        type         : "gauge",
+        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names  : ["status"],
+        label_values : [$status],
+        value        : $value
+      }
 
 ...
 
@@ -113,7 +119,17 @@ collections:
     params:
       - action: 'CLUSTERSTATUS'
   jsonQueries:
-    - '.cluster.live_nodes | length | { name: "solr_collections_cluster_status_live_nodes", type: "gauge", help: "See following URL: http://lucene.apache.org/solr/guide/7_0/collections-api.html#clusterstatus", label_names: [], label_values: [], value: . }'
+    # solr_collections_cluster_status_live_nodes
+    - |-
+      .cluster.live_nodes | length as $value|
+      {
+        name         : "solr_collections_cluster_status_live_nodes",
+        type         : "gauge",
+        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
+        label_names  : [],
+        label_values : [],
+        value        : $value
+      }
 
 ...
 
@@ -133,8 +149,19 @@ queries:
               }
             }
     jsonQueries:
-      - '.facets.category.buckets[] | { name: "solr_facets_category", type: "gauge", help: "Category facets", label_names: ["collection", "term"], label_values: ["collection1", .val], value: .count }'
-
+      # solr_facets_category
+      - |-
+        .facets.category.buckets[] as $object |
+        $object.val as $term |
+        $object.count as $value |
+        {
+          name         : "solr_facets_category",
+          type         : "gauge",
+          help         : "Category facets",
+          label_names  : ["collection", "term"],
+          label_values : ["collection1", $term],
+          value        : $value
+        }
 ```
 
 
