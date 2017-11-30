@@ -216,7 +216,7 @@ metrics:
       ($object.value / 1000.0) as $value |
       {
         name         : "solr_metrics_jvm_os_cpu_time_seconds",
-        type         : "gauge",
+        type         : "counter",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : ["processCpuTime"],
