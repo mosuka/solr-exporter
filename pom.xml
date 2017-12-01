@@ -19,7 +19,7 @@
 
   <groupId>com.github.mosuka.solr.prometheus.exporter</groupId>
   <artifactId>solr-exporter</artifactId>
-  <version>0.3.3</version>
+  <version>0.3.4</version>
   <build>
     <plugins>
       <plugin>
