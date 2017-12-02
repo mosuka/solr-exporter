@@ -924,7 +924,7 @@ metrics:
         value        : $value
       }
 
-    # solr_metrics_core_update_handler_delete_by_id_total
+    # solr_metrics_core_update_handler_deletes_by_id_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
@@ -937,7 +937,7 @@ metrics:
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
       {
-        name         : "solr_metrics_core_update_handler_delete_by_id_total",
+        name         : "solr_metrics_core_update_handler_deletes_by_id_total",
         type         : "counter",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
@@ -945,7 +945,7 @@ metrics:
         value        : $value
       }
 
-    # solr_metrics_core_update_handler_delete_by_query_total
+    # solr_metrics_core_update_handler_deletes_by_query_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
@@ -958,7 +958,7 @@ metrics:
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
       {
-        name         : "solr_metrics_core_update_handler_delete_by_query_total",
+        name         : "solr_metrics_core_update_handler_deletes_by_query_total",
         type         : "counter",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
