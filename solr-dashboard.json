@@ -49,7 +49,6 @@
   "hideControls": false,
   "id": null,
   "links": [],
-  "refresh": "30s",
   "rows": [
     {
       "collapse": false,
@@ -4421,5 +4420,5 @@
   },
   "timezone": "browser",
   "title": "Solr Dashboard",
-  "version": 18
+  "version": 19
 }
