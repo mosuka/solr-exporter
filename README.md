@@ -201,3 +201,5 @@ value        | Metric value. It must be Double type.
 A Grafana dashboard is provided at the following URL.
 
 https://grafana.com/dashboards/3888
+
+![solr-dashboard.png](./solr-dashboard.png "solr-dashboard")
