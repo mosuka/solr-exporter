@@ -194,3 +194,10 @@ help         | Metric help. It must be metric description.
 label_names  | Metric label names. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
 label_values | Metric label values. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
 value        | Metric value. It must be Double type.
+
+
+## Grafana Dashboard
+
+A Grafana dashboard is provided at the following URL.
+
+https://grafana.com/dashboards/3888
