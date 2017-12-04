@@ -49,16 +49,16 @@ Prometheus exporter for Apache Solr.
 
 optional arguments:
   -h, --help             show this help message and exit
-  -v, --version          Show version.
-  -p PORT, --port PORT   solr-exporter listen port.
+  -v, --version          show version
+  -p PORT, --port PORT   solr-exporter listen port
   -b BASE_URL, --baseurl BASE_URL
-                         Specify Solr base URL when connecting to Solr in standalone mode (for example 'http://localhost:8983/solr').
+                         specify Solr base URL when connecting to Solr in standalone mode (for example 'http://localhost:8983/solr')
   -z ZK_HOST, --zkhost ZK_HOST
-                         Specify ZooKeeper connection string when connecting to Solr in SolrCloud mode (for example 'localhost:2181/solr').
+                         specify ZooKeeper connection string when connecting to Solr in SolrCloud mode (for example 'localhost:2181/solr')
   -f CONFIG, --config-file CONFIG
-                         Configuration file.
+                         specify configuration file
   -n NUM_THREADS, --num-thread NUM_THREADS
-                         Number of threads.
+                         specify number of threads
 ```
 
 ## Building from source
