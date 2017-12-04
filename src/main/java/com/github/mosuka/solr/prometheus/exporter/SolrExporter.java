@@ -56,7 +56,7 @@ public class SolrExporter {
      */
     private static final String[] ARG_VERSION_FLAGS = { "-v", "--version" };
     private static final String ARG_VERSION_DEST = "version";
-    private static final String ARG_VERSION_HELP = "Show version.";
+    private static final String ARG_VERSION_HELP = "show version";
     public static String VERSION = "unknown";
 
     /**
@@ -66,7 +66,7 @@ public class SolrExporter {
     private static final String ARG_PORT_METAVAR = "PORT";
     private static final String ARG_PORT_DEST = "port";
     private static final Integer ARG_PORT_DEFAULT = 9983;
-    private static final String ARG_PORT_HELP = "solr-exporter listen port.";
+    private static final String ARG_PORT_HELP = "solr-exporter listen port";
 
     /**
      * -b, --baseurl
@@ -75,7 +75,7 @@ public class SolrExporter {
     private static final String ARG_BASE_URL_METAVAR = "BASE_URL";
     private static final String ARG_BASE_URL_DEST = "baseUrl";
     private static final String ARG_BASE_URL_DEFAULT = "";
-    private static final String ARG_BASE_URL_HELP = "Specify Solr base URL when connecting to Solr in standalone mode (for example 'http://localhost:8983/solr').";
+    private static final String ARG_BASE_URL_HELP = "specify Solr base URL when connecting to Solr in standalone mode (for example 'http://localhost:8983/solr')";
 
     /**
      * -z, --zkhost
@@ -84,7 +84,7 @@ public class SolrExporter {
     private static final String ARG_ZK_HOST_METAVAR = "ZK_HOST";
     private static final String ARG_ZK_HOST_DEST = "zkHost";
     private static final String ARG_ZK_HOST_DEFAULT = "";
-    private static final String ARG_ZK_HOST_HELP = "Specify ZooKeeper connection string when connecting to Solr in SolrCloud mode (for example 'localhost:2181/solr').";
+    private static final String ARG_ZK_HOST_HELP = "specify ZooKeeper connection string when connecting to Solr in SolrCloud mode (for example 'localhost:2181/solr')";
 
     /**
      * -f, --config-file
@@ -93,7 +93,7 @@ public class SolrExporter {
     private static final String ARG_CONFIG_METAVAR = "CONFIG";
     private static final String ARG_CONFIG_DEST = "configFile";
     private static final String ARG_CONFIG_DEFAULT = "./conf/config.yml";
-    private static final String ARG_CONFIG_HELP = "Configuration file.";
+    private static final String ARG_CONFIG_HELP = "specify configuration file";
 
     /**
      * -n, --num-thread
@@ -102,7 +102,7 @@ public class SolrExporter {
     private static final String ARG_NUM_THREADS_METAVAR = "NUM_THREADS";
     private static final String ARG_NUM_THREADS_DEST = "numThreads";
     private static final Integer ARG_NUM_THREADS_DEFAULT = 1;
-    private static final String ARG_NUM_THREADS_HELP = "Number of threads.";
+    private static final String ARG_NUM_THREADS_HELP = "specify number of threads";
 
     private int port;
     private SolrClient solrClient;
