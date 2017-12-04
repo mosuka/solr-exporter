@@ -23,7 +23,6 @@ import com.github.mosuka.solr.prometheus.scraper.config.SolrScraperConfig;
 import io.prometheus.client.Collector;
 import io.prometheus.client.CounterMetricFamily;
 import io.prometheus.client.GaugeMetricFamily;
-import io.prometheus.client.Histogram;
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 import org.apache.solr.client.solrj.SolrClient;
@@ -111,10 +110,17 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
             }
 
             ObjectMapper om = new ObjectMapper();
+
             JsonNode metricsJson = om.readTree((String) queryResponse.get("response"));
 
-            for (int i = 0; i < scraperConfig.getCompiledJsonQueries().size(); i++) {
-                JsonQuery q = scraperConfig.getCompiledJsonQueries().get(i);
+            List<JsonQuery> jqs = new ArrayList<>();
+            for (String jsonQuery : scraperConfig.getJsonQueries()) {
+                JsonQuery compiledJsonQuery = JsonQuery.compile(jsonQuery);
+                jqs.add(compiledJsonQuery);
+            }
+
+            for (int i = 0; i < jqs.size(); i++) {
+                JsonQuery q = jqs.get(i);
                 try {
                     List<JsonNode> results = q.apply(metricsJson);
                     for (JsonNode result : results) {

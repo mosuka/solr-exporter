@@ -1,3 +1,19 @@
+ping:
+  query:
+    path: /admin/ping
+  jsonQueries:
+    - |-
+      . as $object | $object |
+      (if $object.status == "OK" then 1.0 else 0.0 end) as $value |
+      {
+        name         : "solr_ping",
+        type         : "gauge",
+        help         : "See following URL: http://lucene.apache.org/solr/guide/7_1/ping.html",
+        label_names  : [],
+        label_values : [],
+        value        : $value
+      }
+
 metrics:
   query:
     path: /admin/metrics

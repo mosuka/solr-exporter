@@ -36,10 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * SolrCollector
@@ -101,6 +98,76 @@ public class SolrCollector extends Collector implements Collector.Describable {
         List<Future<Map<String, MetricFamilySamples>>> futureList = new ArrayList<>();
 
         try {
+            // Ping
+            if (config.getPing() != null) {
+                if (solrClient instanceof CloudSolrClient) {
+                    for (HttpSolrClient httpSolrClient : httpSolrClients) {
+                        try {
+                            List<String> cores = getCores(httpSolrClient);
+                            for (String core : cores) {
+                                SolrScraperConfig pingConfig;
+                                try {
+                                    pingConfig = config.getPing().clone();
+                                } catch (CloneNotSupportedException e) {
+                                    logger.error(e.getMessage());
+                                    continue;
+                                }
+
+                                pingConfig.getQuery().setCore(core);
+
+                                SolrScraper scraper = new SolrScraper(httpSolrClient, pingConfig);
+                                Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                                futureList.add(future);
+                            }
+                        } catch (SolrServerException | IOException e) {
+                            logger.error(e.getMessage());
+                        }
+                    }
+
+                    try {
+                        List<String> collections = getCollections((CloudSolrClient) solrClient);
+                        for (String collection : collections) {
+                            SolrScraperConfig pingConfig;
+                            try {
+                                pingConfig = config.getPing().clone();
+                            } catch (CloneNotSupportedException e) {
+                                logger.error(e.getMessage());
+                                continue;
+                            }
+
+                            pingConfig.getQuery().setCollection(collection);
+                            LinkedHashMap<String, String> distrib = new LinkedHashMap<>();
+                            distrib.put("distrib", "true");
+                            pingConfig.getQuery().setParams(Collections.singletonList(distrib));
+
+                            SolrScraper scraper = new SolrScraper(solrClient, pingConfig);
+                            Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                            futureList.add(future);
+                        }
+                    } catch (SolrServerException | IOException e) {
+                        logger.error(e.getMessage());
+                    }
+
+                } else {
+                    try {
+                        List<String> cores = getCores((HttpSolrClient) solrClient);
+                        for (String core : cores) {
+                            SolrScraperConfig pingConfig = new SolrScraperConfig();
+                            pingConfig.setQuery(config.getPing().getQuery());
+                            pingConfig.getQuery().setCore(core);
+
+                            pingConfig.setJsonQueries(config.getPing().getJsonQueries());
+
+                            SolrScraper scraper = new SolrScraper(solrClient, pingConfig);
+                            Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                            futureList.add(future);
+                        }
+                    } catch (SolrServerException | IOException e) {
+                        logger.error(e.getMessage());
+                    }
+                }
+            }
+
             // Metrics
             if (config.getMetrics() != null) {
                 if (solrClient instanceof CloudSolrClient) {
@@ -137,8 +204,9 @@ public class SolrCollector extends Collector implements Collector.Describable {
             // get future
             for (Future<Map<String, MetricFamilySamples>> future : futureList) {
                 try {
-                    mergeMetrics(metricFamilySamplesMap, future.get());
-                } catch (InterruptedException | ExecutionException e) {
+                    Map<String, MetricFamilySamples> m = future.get(60, TimeUnit.SECONDS);
+                    mergeMetrics(metricFamilySamplesMap, m);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     logger.error(e.getMessage());
                 }
             }

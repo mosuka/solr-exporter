@@ -16,9 +16,6 @@
  */
 package com.github.mosuka.solr.prometheus.scraper.config;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import net.thisptr.jackson.jq.JsonQuery;
-import net.thisptr.jackson.jq.Scope;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 
 import java.util.ArrayList;
@@ -31,7 +28,6 @@ import java.util.List;
 public class SolrScraperConfig implements Cloneable {
     private SolrQueryConfig query = new SolrQueryConfig();
     private List<String> jsonQueries = new ArrayList<>();
-    private List<JsonQuery> compiledJsonQueries = new ArrayList<>();
 
     public SolrQueryConfig getQuery() {
         return this.query;
@@ -47,16 +43,6 @@ public class SolrScraperConfig implements Cloneable {
 
     public void setJsonQueries(List<String> jsonQueries) throws JsonQueryException {
         this.jsonQueries = jsonQueries;
-
-        compiledJsonQueries.clear();
-        for (String jsonQuery : this.jsonQueries) {
-            JsonQuery q = JsonQuery.compile(jsonQuery);
-            compiledJsonQueries.add(q);
-        }
-    }
-
-    public List<JsonQuery> getCompiledJsonQueries() {
-        return compiledJsonQueries;
     }
 
     public SolrScraperConfig clone() throws CloneNotSupportedException {
