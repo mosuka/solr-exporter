@@ -7,7 +7,7 @@ ping:
       (if $object.status == "OK" then 1.0 else 0.0 end) as $value |
       {
         name         : "solr_ping",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: http://lucene.apache.org/solr/guide/7_1/ping.html",
         label_names  : [],
         label_values : [],
@@ -33,7 +33,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_jetty_response_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["status"],
         label_values : [$status],
@@ -47,7 +47,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_jetty_requests_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["method"],
         label_values : [$method],
@@ -60,7 +60,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_jetty_dispatches_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : [],
         label_values : [],
@@ -77,7 +77,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_buffers",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["pool"],
         label_values : [$pool],
@@ -92,7 +92,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_buffers_bytes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["pool", "item"],
         label_values : [$pool, $item],
@@ -106,7 +106,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_gc_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -120,7 +120,7 @@ metrics:
       ($object.value / 1000) as $value |
       {
         name         : "solr_metrics_jvm_gc_seconds_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -134,7 +134,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_memory_heap_bytes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -148,7 +148,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_memory_non_heap_bytes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -163,7 +163,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_memory_pools_bytes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["space", "item"],
         label_values : [$space, $item],
@@ -177,7 +177,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_memory_bytes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -191,7 +191,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_os_memory_bytes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -205,7 +205,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_os_file_descriptors",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -219,7 +219,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_os_cpu_load",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -232,7 +232,7 @@ metrics:
       ($object.value / 1000.0) as $value |
       {
         name         : "solr_metrics_jvm_os_cpu_time_seconds",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : ["processCpuTime"],
@@ -245,7 +245,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_os_load_average",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : ["systemLoadAverage"],
@@ -259,7 +259,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_jvm_threads",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["item"],
         label_values : [$item],
@@ -274,7 +274,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_node_client_errors_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler"],
         label_values : [$category, $handler],
@@ -289,7 +289,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_node_errors_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler"],
         label_values : [$category, $handler],
@@ -304,7 +304,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_node_requests_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler"],
         label_values : [$category, $handler],
@@ -319,7 +319,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_node_server_errors_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler"],
         label_values : [$category, $handler],
@@ -334,7 +334,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_node_timeouts_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler"],
         label_values : [$category, $handler],
@@ -349,7 +349,7 @@ metrics:
       ($object.value / 1000) as $value |
       {
         name         : "solr_metrics_node_time_seconds_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler"],
         label_values : [$category, $handler],
@@ -364,7 +364,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_node_cores",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "item"],
         label_values : [$category, $item],
@@ -381,7 +381,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_node_core_root_fs_bytes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "item"],
         label_values : [$category, $item],
@@ -399,7 +399,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_node_thread_pool_completed_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "executor"],
         label_values : [$category, $handler, $executor],
@@ -417,7 +417,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_node_thread_pool_running",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "executor"],
         label_values : [$category, $handler, $executor],
@@ -435,7 +435,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_node_thread_pool_submitted_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "executor"],
         label_values : [$category, $handler, $executor],
@@ -453,7 +453,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_node_connections",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "item"],
         label_values : [$category, $handler, $item],
@@ -478,7 +478,7 @@ metrics:
       $object.value.count as $value |
       {
         name: "solr_metrics_core_client_errors_total",
-        type: "counter",
+        type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category", "handler", "collection", "shard", "replica"],
         label_values: [$category, $handler, $collection, $shard, $replica],
@@ -500,7 +500,7 @@ metrics:
       $object.value.count as $value |
       {
         name: "solr_metrics_core_errors_total",
-        type: "counter",
+        type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category", "handler", "collection", "shard", "replica"],
         label_values: [$category, $handler, $collection, $shard, $replica],
@@ -522,7 +522,7 @@ metrics:
       $object.value.count as $value |
       {
         name: "solr_metrics_core_requests_total",
-        type: "counter",
+        type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category", "handler", "collection", "shard", "replica"],
         label_values: [$category, $handler, $collection, $shard, $replica],
@@ -544,7 +544,7 @@ metrics:
       $object.value.count as $value |
       {
         name: "solr_metrics_core_server_errors_total",
-        type: "counter",
+        type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category", "handler", "collection", "shard", "replica"],
         label_values: [$category, $handler, $collection, $shard, $replica],
@@ -566,7 +566,7 @@ metrics:
       $object.value.count as $value |
       {
         name: "solr_metrics_core_timeouts_total",
-        type: "counter",
+        type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category", "handler", "collection", "shard", "replica"],
         label_values: [$category, $handler, $collection, $shard, $replica],
@@ -588,7 +588,7 @@ metrics:
       ($object.value / 1000) as $value |
       {
         name: "solr_metrics_core_time_seconds_total",
-        type: "counter",
+        type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category", "handler", "collection", "shard", "replica"],
         label_values: [$category, $handler, $collection, $shard, $replica],
@@ -608,7 +608,7 @@ metrics:
       $object.value.entries_count as $value |
       {
         name         : "solr_metrics_core_field_cache_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica"],
         label_values : [$category, $collection, $shard, $replica],
@@ -631,7 +631,7 @@ metrics:
       $target.value as $value |
       {
         name         : "solr_metrics_core_searcher_cache",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica", "type", "item"],
         label_values : [$category, $collection, $shard, $replica, $type, $item],
@@ -654,7 +654,7 @@ metrics:
       $target.value as $value |
       {
         name         : "solr_metrics_core_searcher_cache_ratio",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica", "type", "item"],
         label_values : [$category, $collection, $shard, $replica, $type, $item],
@@ -677,7 +677,7 @@ metrics:
       ($target.value / 1000) as $value |
       {
         name         : "solr_metrics_core_searcher_warmup_time_seconds",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica", "type", "item"],
         label_values : [$category, $collection, $shard, $replica, $type, $item],
@@ -700,7 +700,7 @@ metrics:
       $target.value as $value |
       {
         name         : "solr_metrics_core_searcher_cumulative_cache_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica", "type", "item"],
         label_values : [$category, $collection, $shard, $replica, $type, $item],
@@ -723,7 +723,7 @@ metrics:
       $target.value as $value |
       {
         name         : "solr_metrics_core_searcher_cumulative_cache_ratio",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica", "type", "item"],
         label_values : [$category, $collection, $shard, $replica, $type, $item],
@@ -744,7 +744,7 @@ metrics:
       $object.value as $value |
       {
         name: "solr_metrics_core_fs_bytes",
-        type: "gauge",
+        type: "GAUGE",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category","collection","shard","replica","item"],
         label_values: [$category, $collection, $shard, $replica, $item],
@@ -766,7 +766,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_highlighter_request_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica", "name", "item"],
         label_values : [$category, $collection, $shard, $replica, $name, $item],
@@ -786,7 +786,7 @@ metrics:
       $object.value as $value |
       {
         name: "solr_metrics_core_index_size_bytes",
-        type: "gauge",
+        type: "GAUGE",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names: ["category", "collection", "shard","replica"],
         label_values: [$category, $collection, $shard, $replica],
@@ -807,7 +807,7 @@ metrics:
       (if $object.value == true then 1.0 else 0.0 end) as $value |
       {
         name         : "solr_metrics_core_replication_master",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -828,7 +828,7 @@ metrics:
       (if $object.value == true then 1.0 else 0.0 end) as $value |
       {
         name         : "solr_metrics_core_replication_slave",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -849,7 +849,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_searcher_documents",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "collection", "shard", "replica", "item"],
         label_values : [$category, $collection, $shard, $replica, $item],
@@ -870,7 +870,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_update_handler_adds",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -891,7 +891,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_update_handler_auto_commits_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -912,7 +912,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_commits_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -933,7 +933,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_adds_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -954,7 +954,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_deletes_by_id_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -975,7 +975,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_deletes_by_query_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -996,7 +996,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_errors_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1017,7 +1017,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_update_handler_deletes_by_id",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1038,7 +1038,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_update_handler_deletes_by_query",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1059,7 +1059,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_update_handler_pending_docs",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1080,7 +1080,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_update_handler_errors",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1101,7 +1101,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_expunge_deletes_total",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1122,7 +1122,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_merges_total",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1143,7 +1143,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_optimizes_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1164,7 +1164,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_rollbacks_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1185,7 +1185,7 @@ metrics:
       $object.value as $value |
       {
         name         : "solr_metrics_core_update_handler_soft_auto_commits_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1206,7 +1206,7 @@ metrics:
       $object.value.count as $value |
       {
         name         : "solr_metrics_core_update_handler_splits_total",
-        type         : "counter",
+        type         : "COUNTER",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
         label_names  : ["category", "handler", "collection", "shard", "replica"],
         label_values : [$category, $handler, $collection, $shard, $replica],
@@ -1225,7 +1225,7 @@ collections:
       .cluster.live_nodes | length as $value|
       {
         name         : "solr_collections_live_nodes",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
         label_names  : [],
         label_values : [],
@@ -1239,7 +1239,7 @@ collections:
       $object.value.pullReplicas | tonumber as $value |
       {
         name         : "solr_collections_pull_replicas",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
         label_names  : ["collection"],
         label_values : [$collection],
@@ -1253,7 +1253,7 @@ collections:
       $object.value.nrtReplicas | tonumber as $value |
       {
         name         : "solr_collections_nrt_replicas",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
         label_names  : ["collection"],
         label_values : [$collection],
@@ -1267,7 +1267,7 @@ collections:
       $object.value.tlogReplicas | tonumber as $value |
       {
         name         : "solr_collections_tlog_replicas",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
         label_names  : ["collection"],
         label_values : [$collection],
@@ -1283,7 +1283,7 @@ collections:
       (if $shard_obj.value.state == "active" then 1.0 else 0.0 end) as $value |
       {
         name         : "solr_collections_shard_state",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
         label_names  : ["collection","shard"],
         label_values : [$collection,$shard],
@@ -1305,7 +1305,7 @@ collections:
       (if $replica_obj.value.state == "active" then 1.0 else 0.0 end) as $value |
       {
         name         : "solr_collections_replica_state",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
         label_names  : ["collection", "shard", "replica", "core", "base_url", "node_name", "type"],
         label_values : [$collection, $shard, $replica, $core, $base_url, $node_name, $type],
@@ -1327,7 +1327,7 @@ collections:
       (if $replica_obj.value.leader == "true" then 1.0 else 0.0 end) as $value |
       {
         name         : "solr_collections_shard_leader",
-        type         : "gauge",
+        type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
         label_names  : ["collection", "shard", "replica", "core", "base_url", "node_name", "type"],
         label_values : [$collection, $shard, $replica, $core, $base_url, $node_name, $type],
@@ -1358,7 +1358,7 @@ queries:
         $object.count as $value |
         {
           name         : "solr_facets_category",
-          type         : "gauge",
+          type         : "GAUGE",
           help         : "Category facets",
           label_names  : ["collection", "term"],
           label_values : ["collection1", $term],

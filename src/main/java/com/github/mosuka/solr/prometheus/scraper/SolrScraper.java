@@ -21,8 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mosuka.solr.prometheus.scraper.config.SolrQueryConfig;
 import com.github.mosuka.solr.prometheus.scraper.config.SolrScraperConfig;
 import io.prometheus.client.Collector;
-import io.prometheus.client.CounterMetricFamily;
-import io.prometheus.client.GaugeMetricFamily;
 import net.thisptr.jackson.jq.JsonQuery;
 import net.thisptr.jackson.jq.exception.JsonQueryException;
 import org.apache.solr.client.solrj.SolrClient;
@@ -160,24 +158,13 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
                         }
 
                         if (!metricFamilySamplesMap.containsKey(name)) {
-                            if (type.equals("gauge")) {
-                                GaugeMetricFamily gauge = new GaugeMetricFamily(
-                                        name,
-                                        help,
-                                        labelNames);
-                                metricFamilySamplesMap.put(name, gauge);
-                            } else if (type.equals("counter")) {
-                                CounterMetricFamily counter = new CounterMetricFamily(
-                                        name,
-                                        help,
-                                        labelNames
-                                );
-                                metricFamilySamplesMap.put(name, counter);
-                            } else if (type.equals("histogram")) {
-                                // TODO
-                            } else if (type.equals("summary")) {
-                                // TODO
-                            }
+                            Collector.MetricFamilySamples metricFamilySamples = new Collector.MetricFamilySamples(
+                                    name,
+                                    Collector.Type.valueOf(type),
+                                    help,
+                                    new ArrayList<>()
+                            );
+                            metricFamilySamplesMap.put(name, metricFamilySamples);
                         }
 
                         Collector.MetricFamilySamples.Sample sample = new Collector.MetricFamilySamples.Sample(name, labelNames, labelValues, value);

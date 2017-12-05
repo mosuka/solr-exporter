@@ -13,8 +13,8 @@ To keep things simple for now, extract the solr-exporter distribution archive to
 
 ```text
 $ cd ~/
-$ unzip solr-exporter-0.3.2-bin.zip
-$ cd solr-exporter-0.3.2
+$ unzip solr-exporter-0.3.7-bin.zip
+$ cd solr-exporter-0.3.7
 ```
 
 Once extracted, you are now ready to run solr-exporter using the instructions provided in the Running solr-exporter section.
@@ -43,7 +43,8 @@ See command help:
 
 ```text
 $ ./bin/solr-exporter -h
-usage: SolrCollector [-h] [-v] [-p PORT] [-b BASE_URL] [-z ZK_HOST] [-f CONFIG] [-n NUM_THREADS]
+usage: SolrCollector [-h] [-v] [-p PORT] [-b BASE_URL] [-z ZK_HOST] [-f CONFIG]
+                     [-n NUM_THREADS]
 
 Prometheus exporter for Apache Solr.
 
@@ -52,9 +53,11 @@ optional arguments:
   -v, --version          show version
   -p PORT, --port PORT   solr-exporter listen port
   -b BASE_URL, --baseurl BASE_URL
-                         specify Solr base URL when connecting to Solr in standalone mode (for example 'http://localhost:8983/solr')
+                         specify Solr base URL when connecting  to Solr in standalone mode (for
+                         example 'http://localhost:8983/solr')
   -z ZK_HOST, --zkhost ZK_HOST
-                         specify ZooKeeper connection string when connecting to Solr in SolrCloud mode (for example 'localhost:2181/solr')
+                         specify  ZooKeeper  connection  string  when  connecting  to  Solr  in
+                         SolrCloud mode (for example 'localhost:2181/solr')
   -f CONFIG, --config-file CONFIG
                          specify configuration file
   -n NUM_THREADS, --num-thread NUM_THREADS
@@ -171,14 +174,14 @@ metrics     | Scrape Metrics Reporting response. See following URL: [https://luc
 collections | Scrape Collections API response. See following URL: [https://lucene.apache.org/solr/guide/7_0/collections-api.html](https://lucene.apache.org/solr/guide/7_0/collections-api.html)/
 queries     | Scrape Search response. See following URL: [https://lucene.apache.org/solr/guide/7_0/searching.html](https://lucene.apache.org/solr/guide/7_0/searching.html).
 query       | Specify the Solr query parameter. It should contains collection or core (optional), path, params.
-jsonQueries | Specify the Json queries to parse json response. For more details, see [https://stedolan.github.io/jq/manual/](https://stedolan.github.io/jq/manual/).
+jsonQueries | Specify the jq queries to parse json response. For more details, see [https://stedolan.github.io/jq/manual/](https://stedolan.github.io/jq/manual/).
 
-Json query has to output JSON in the following format.
+jq query has to output JSON in the following format.
 
 ```json
 {
   "name": "some_metric_name",
-  "type": "gauge", 
+  "type": "GAUGE", 
   "help": "describe metric.",
   "label_names": ["label_name1", "label_name2"],
   "label_values": ["label_value1", "label_value2"],
@@ -186,14 +189,22 @@ Json query has to output JSON in the following format.
 }
 ```
 
+It will be converted to the following exposition format.
+
+```text
+# TYPE some_metric_name gauge
+# HELP some_metric_name describe metric.
+some_metric_name{label_name1="label_value1",label_name2="label_value2"} 1.0
+```
+
 Name         | Description
 ------------ | ---
-name         | Metric name. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
-type         | Metric type. For more detauils, see [https://prometheus.io/docs/concepts/metric_types/](https://prometheus.io/docs/concepts/metric_types/).
-help         | Metric help. It must be metric description.
-label_names  | Metric label names. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
-label_values | Metric label values. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
-value        | Metric value. It must be Double type.
+name         | The metric name to set. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
+type         | The type of the metric, can be `COUNTER`, `GAUGE`, `SUMMARY`, `HISTOGRAM` or `UNTYPED`. For more detauils, see [https://prometheus.io/docs/concepts/metric_types/](https://prometheus.io/docs/concepts/metric_types/).
+help         | Help text for the metric.
+label_names  | Label names for the metric. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
+label_values | Label values for the metric. For more details, see [https://prometheus.io/docs/practices/naming/](https://prometheus.io/docs/practices/naming/).
+value        | Value for the metric. Value must be set to Double type.
 
 
 ## Grafana Dashboard
