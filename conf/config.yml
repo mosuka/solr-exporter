@@ -468,750 +468,1205 @@ metrics:
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | endswith(".clientErrors")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       select($handler | startswith("/")) |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_client_errors_total",
         type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category", "handler", "collection", "shard", "replica"],
-        label_values: [$category, $handler, $collection, $shard, $replica],
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_client_errors_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_errors_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | endswith(".errors")) | select (.value | type == "object") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       select($handler | startswith("/")) |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_errors_total",
         type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category", "handler", "collection", "shard", "replica"],
-        label_values: [$category, $handler, $collection, $shard, $replica],
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_errors_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_requests_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | endswith(".requestTimes")) | select (.value | type == "object") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       select($handler | startswith("/")) |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_requests_total",
         type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category", "handler", "collection", "shard", "replica"],
-        label_values: [$category, $handler, $collection, $shard, $replica],
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_requests_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_server_errors_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | endswith(".serverErrors")) | select (.value | type == "object") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       select($handler | startswith("/")) |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_server_errors_total",
         type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category", "handler", "collection", "shard", "replica"],
-        label_values: [$category, $handler, $collection, $shard, $replica],
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_server_errors_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_timeouts_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | endswith(".timeouts")) | select (.value | type == "object") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       select($handler | startswith("/")) |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_timeouts_total",
         type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category", "handler", "collection", "shard", "replica"],
-        label_values: [$category, $handler, $collection, $shard, $replica],
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_timeouts_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_time_seconds_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | endswith(".totalTime")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       select($handler | startswith("/")) |
       ($object.value / 1000) as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_time_seconds_total",
         type: "COUNTER",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category", "handler", "collection", "shard", "replica"],
-        label_values: [$category, $handler, $collection, $shard, $replica],
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_time_seconds_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_field_cache_total
     - |-
       .metrics | to_entries | .[] | select (.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "CACHE.core.fieldCache") as $object |
       $object.key | split(".")[0] as $category |
       $object.value.entries_count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_field_cache_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica"],
-        label_values : [$category, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_field_cache_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core"],
+        label_values: [$category, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_field_cache_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica"],
+        label_values: [$category, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_searcher_cache
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | startswith("CACHE.searcher.")) | select (.key | endswith("documentCache") or endswith("fieldValueCache") or endswith("filterCache") or endswith("perSegFilter") or endswith("queryResultCache")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[2] as $type |
       $object.value | to_entries | .[] | select(.key == "lookups" or .key == "hits" or .key == "size" or .key == "evictions" or .key == "inserts") as $target |
       $target.key as $item |
       $target.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_searcher_cache",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica", "type", "item"],
-        label_values : [$category, $collection, $shard, $replica, $type, $item],
-        value        : $value
+        name: "solr_metrics_core_searcher_cache",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "type", "item"],
+        label_values: [$category, $core, $type, $item],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_searcher_cache",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "type", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $type, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_searcher_cache_ratio
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | startswith("CACHE.searcher.")) | select (.key | endswith("documentCache") or endswith("fieldValueCache") or endswith("filterCache") or endswith("perSegFilter") or endswith("queryResultCache")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[2] as $type |
       $object.value | to_entries | .[] | select(.key == "hitratio") as $target |
       $target.key as $item |
       $target.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_searcher_cache_ratio",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica", "type", "item"],
-        label_values : [$category, $collection, $shard, $replica, $type, $item],
-        value        : $value
+        name: "solr_metrics_core_searcher_cache_ratio",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "type", "item"],
+        label_values: [$category, $core, $type, $item],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_searcher_cache_ratio",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "type", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $type, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_searcher_warmup_time_seconds
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | startswith("CACHE.searcher.")) | select (.key | endswith("documentCache") or endswith("fieldValueCache") or endswith("filterCache") or endswith("perSegFilter") or endswith("queryResultCache")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[2] as $type |
       $object.value | to_entries | .[] | select(.key == "warmupTime") as $target |
       $target.key as $item |
       ($target.value / 1000) as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_searcher_warmup_time_seconds",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica", "type", "item"],
-        label_values : [$category, $collection, $shard, $replica, $type, $item],
-        value        : $value
+        name: "solr_metrics_core_searcher_warmup_time_seconds",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "type", "item"],
+        label_values: [$category, $core, $type, $item],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_searcher_warmup_time_seconds",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "type", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $type, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_searcher_cumulative_cache_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | startswith("CACHE.searcher.")) | select (.key | endswith("documentCache") or endswith("fieldValueCache") or endswith("filterCache") or endswith("perSegFilter") or endswith("queryResultCache")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[2] as $type |
       $object.value | to_entries | .[] | select(.key == "cumulative_lookups" or .key == "cumulative_hits" or .key == "cumulative_evictions" or .key == "cumulative_inserts") as $target |
       $target.key as $item |
       $target.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_searcher_cumulative_cache_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica", "type", "item"],
-        label_values : [$category, $collection, $shard, $replica, $type, $item],
-        value        : $value
+        name: "solr_metrics_core_searcher_cumulative_cache_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "type", "item"],
+        label_values: [$category, $core, $type, $item],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_searcher_cumulative_cache_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "type", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $type, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_searcher_cumulative_cache_ratio
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | startswith("CACHE.searcher.")) | select (.key | endswith("documentCache") or endswith("fieldValueCache") or endswith("filterCache") or endswith("perSegFilter") or endswith("queryResultCache")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[2] as $type |
       $object.value | to_entries | .[] | select(.key == "cumulative_hitratio") as $target |
       $target.key as $item |
       $target.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_searcher_cumulative_cache_ratio",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica", "type", "item"],
-        label_values : [$category, $collection, $shard, $replica, $type, $item],
-        value        : $value
+        name: "solr_metrics_core_searcher_cumulative_cache_ratio",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "type", "item"],
+        label_values: [$category, $core, $type, $item],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_searcher_cumulative_cache_ratio",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "type", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $type, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_fs_bytes
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | startswith("CORE.fs.")) | select (.key | endswith(".totalSpace") or endswith(".usableSpace")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[2] as $item |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_fs_bytes",
         type: "GAUGE",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category","collection","shard","replica","item"],
-        label_values: [$category, $collection, $shard, $replica, $item],
+        label_names: ["category", "core", "item"],
+        label_values: [$category, $core, $item],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_fs_bytes",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_highlighter_request_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key | startswith("HIGHLIGHTER.")) | select (.key | endswith(".requests")) as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $name |
       $object.key | split(".")[2] as $item |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_highlighter_request_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica", "name", "item"],
-        label_values : [$category, $collection, $shard, $replica, $name, $item],
-        value        : $value
+        name: "solr_metrics_core_highlighter_request_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "name", "item"],
+        label_values: [$category, $core, $name, $item],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_highlighter_request_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "name", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $name, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_index_size_bytes
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "INDEX.sizeInBytes") as $object |
       $object.key | split(".")[0] as $category |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
         name: "solr_metrics_core_index_size_bytes",
         type: "GAUGE",
         help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names: ["category", "collection", "shard","replica"],
-        label_values: [$category, $collection, $shard, $replica],
+        label_names: ["category", "core"],
+        label_values: [$category, $core],
         value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_index_size_bytes",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica"],
+        label_values: [$category, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_replication_master
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "REPLICATION./replication.isMaster") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       (if $object.value == true then 1.0 else 0.0 end) as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_replication_master",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_replication_master",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_replication_master",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_replication_slave
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "REPLICATION./replication.isSlave") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       (if $object.value == true then 1.0 else 0.0 end) as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_replication_slave",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_replication_slave",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_replication_slave",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_searcher_documents
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "SEARCHER.searcher.deletedDocs" or .key == "SEARCHER.searcher.maxDoc" or .key == "SEARCHER.searcher.numDocs") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[2] as $item |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_searcher_documents",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "collection", "shard", "replica", "item"],
-        label_values : [$category, $collection, $shard, $replica, $item],
-        value        : $value
+        name: "solr_metrics_core_searcher_documents",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "item"],
+        label_values: [$category, $core, $item],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_searcher_documents",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "core", "collection", "shard", "replica", "item"],
+        label_values: [$category, $core, $collection, $shard, $replica, $item],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_adds
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.adds") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_adds",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_adds",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_adds",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_auto_commits_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.autoCommits") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_auto_commits_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_auto_commits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_auto_commits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_commits_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.commits") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_commits_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_commits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_commits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_adds_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.cumulativeAdds") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_adds_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_adds_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_adds_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_deletes_by_id_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.cumulativeDeletesById") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_deletes_by_id_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_deletes_by_id_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_deletes_by_id_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_deletes_by_query_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.cumulativeDeletesByQuery") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_deletes_by_query_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_deletes_by_query_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_deletes_by_query_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_errors_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.cumulativeErrors") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_errors_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_errors_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_errors_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_deletes_by_id
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.deletesById") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_deletes_by_id",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_deletes_by_id",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_deletes_by_id",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_deletes_by_query
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.deletesByQuery") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_deletes_by_query",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_deletes_by_query",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_deletes_by_query",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_pending_docs
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.docsPending") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_pending_docs",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_pending_docs",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_pending_docs",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_errors
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.errors") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_errors",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_errors",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_errors",
+        type: "GAUGE",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_expunge_deletes_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.expungeDeletes") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_expunge_deletes_total",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_expunge_deletes_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_expunge_deletes_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_merges_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.merges") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_merges_total",
-        type         : "GAUGE",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_merges_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_merges_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_optimizes_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.optimizes") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_optimizes_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_optimizes_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_optimizes_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_rollbacks_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.rollbacks") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_rollbacks_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_rollbacks_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_rollbacks_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_soft_auto_commits_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.softAutoCommits") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_soft_auto_commits_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_soft_auto_commits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_soft_auto_commits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
     # solr_metrics_core_update_handler_splits_total
     - |-
       .metrics | to_entries | .[] | select(.key | startswith("solr.core.")) as $parent |
       $parent.key | split(".") as $parent_key_items |
       $parent_key_items | length as $parent_key_item_len |
-      (if $parent_key_item_len >= 5 then $parent_key_items[2] else "" end) as $collection |
-      (if $parent_key_item_len >= 5 then $parent_key_items[3] else "" end) as $shard |
-      (if $parent_key_item_len >= 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 3 then $parent_key_items[2] else "" end) as $core |
+      (if $parent_key_item_len == 5 then $parent_key_items[2] else "" end) as $collection |
+      (if $parent_key_item_len == 5 then $parent_key_items[3] else "" end) as $shard |
+      (if $parent_key_item_len == 5 then $parent_key_items[4] else "" end) as $replica |
+      (if $parent_key_item_len == 5 then ($collection + "_" + $shard + "_" + $replica) else $core end) as $core |
       $parent.value | to_entries | .[] | select(.key == "UPDATE.updateHandler.splits") as $object |
       $object.key | split(".")[0] as $category |
       $object.key | split(".")[1] as $handler |
       $object.value.count as $value |
+      if $parent_key_item_len == 3 then
       {
-        name         : "solr_metrics_core_update_handler_splits_total",
-        type         : "COUNTER",
-        help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
-        label_names  : ["category", "handler", "collection", "shard", "replica"],
-        label_values : [$category, $handler, $collection, $shard, $replica],
-        value        : $value
+        name: "solr_metrics_core_update_handler_splits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core"],
+        label_values: [$category, $handler, $core],
+        value: $value
       }
+      else
+      {
+        name: "solr_metrics_core_update_handler_splits_total",
+        type: "COUNTER",
+        help: "See following URL: https://lucene.apache.org/solr/guide/7_1/metrics-reporting.html",
+        label_names: ["category", "handler", "core", "collection", "shard", "replica"],
+        label_values: [$category, $handler, $core, $collection, $shard, $replica],
+        value: $value
+      }
+      end
 
 
 collections:
@@ -1297,8 +1752,9 @@ collections:
       $object.value.shards | to_entries | .[] | . as $shard_obj |
       $shard_obj.key as $shard |
       $shard_obj.value.replicas | to_entries | .[] | . as $replica_obj |
-      $replica_obj.key as $replica |
+      $replica_obj.key as $replica_name |
       $replica_obj.value.core as $core |
+      $core[$collection + "_" + $shard + "_" | length:] as $replica |
       $replica_obj.value.base_url as $base_url |
       $replica_obj.value.node_name as $node_name |
       $replica_obj.value.type as $type |
@@ -1307,8 +1763,8 @@ collections:
         name         : "solr_collections_replica_state",
         type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
-        label_names  : ["collection", "shard", "replica", "core", "base_url", "node_name", "type"],
-        label_values : [$collection, $shard, $replica, $core, $base_url, $node_name, $type],
+        label_names  : ["collection", "shard", "replica", "replica_name", "core", "base_url", "node_name", "type"],
+        label_values : [$collection, $shard, $replica, $replica_name, $core, $base_url, $node_name, $type],
         value        : $value
       }
 
@@ -1319,8 +1775,9 @@ collections:
       $object.value.shards | to_entries | .[] | . as $shard_obj |
       $shard_obj.key as $shard |
       $shard_obj.value.replicas | to_entries | .[] | . as $replica_obj |
-      $replica_obj.key as $replica |
+      $replica_obj.key as $replica_name |
       $replica_obj.value.core as $core |
+      $core[$collection + "_" + $shard + "_" | length:] as $replica |
       $replica_obj.value.base_url as $base_url |
       $replica_obj.value.node_name as $node_name |
       $replica_obj.value.type as $type |
@@ -1329,8 +1786,8 @@ collections:
         name         : "solr_collections_shard_leader",
         type         : "GAUGE",
         help         : "See following URL: https://lucene.apache.org/solr/guide/7_1/collections-api.html#clusterstatus",
-        label_names  : ["collection", "shard", "replica", "core", "base_url", "node_name", "type"],
-        label_values : [$collection, $shard, $replica, $core, $base_url, $node_name, $type],
+        label_names  : ["collection", "shard", "replica", "replica_name", "core", "base_url", "node_name", "type"],
+        label_values : [$collection, $shard, $replica, $replica_name, $core, $base_url, $node_name, $type],
         value        : $value
       }
 

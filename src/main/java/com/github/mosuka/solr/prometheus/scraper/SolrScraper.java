@@ -47,14 +47,27 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
     private SolrClient solrClient;
     private SolrScraperConfig scraperConfig;
 
+    private List<String> labelNames;
+    private List<String> labelValues;
+
     /**
      *
      */
     public SolrScraper(SolrClient solrClient, SolrScraperConfig scraperConfig) {
+        this(solrClient, scraperConfig, new ArrayList<>(), new ArrayList<>());
+    }
+
+    /**
+     *
+     */
+    public SolrScraper(SolrClient solrClient, SolrScraperConfig scraperConfig, List<String> labelNames, List<String> labelValues) {
         super();
 
         this.solrClient = solrClient;
         this.scraperConfig = scraperConfig;
+
+        this.labelNames = labelNames;
+        this.labelValues = labelValues;
     }
 
     /**
@@ -127,8 +140,8 @@ public class SolrScraper implements Callable<Map<String, Collector.MetricFamilyS
                         String help = result.get("help").textValue();
                         Double value = result.get("value").doubleValue();
 
-                        List<String> labelNames = new ArrayList<>();
-                        List<String> labelValues = new ArrayList<>();
+                        List<String> labelNames = new ArrayList<>(this.labelNames);
+                        List<String> labelValues = new ArrayList<>(this.labelValues);
 
                         if (solrClient instanceof HttpSolrClient) {
                             labelNames.add("base_url");

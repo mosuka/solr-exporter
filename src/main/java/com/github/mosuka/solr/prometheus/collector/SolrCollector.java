@@ -83,15 +83,6 @@ public class SolrCollector extends Collector implements Collector.Describable {
         // start time of scraping.
         long startTime = System.nanoTime();
 
-        List<HttpSolrClient> httpSolrClients = new ArrayList<>();
-        if (solrClient instanceof CloudSolrClient) {
-            try {
-                httpSolrClients = getHttpSolrClients((CloudSolrClient) solrClient);
-            } catch (SolrServerException | IOException e) {
-                logger.error(e.getMessage());
-            }
-        }
-
         Map<String, MetricFamilySamples> metricFamilySamplesMap = new LinkedHashMap<>();
 
         ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
@@ -101,26 +92,50 @@ public class SolrCollector extends Collector implements Collector.Describable {
             // Ping
             if (config.getPing() != null) {
                 if (solrClient instanceof CloudSolrClient) {
-                    for (HttpSolrClient httpSolrClient : httpSolrClients) {
-                        try {
-                            List<String> cores = getCores(httpSolrClient);
-                            for (String core : cores) {
-                                SolrScraperConfig pingConfig;
-                                try {
-                                    pingConfig = config.getPing().clone();
-                                } catch (CloneNotSupportedException e) {
-                                    logger.error(e.getMessage());
-                                    continue;
+                    List<HttpSolrClient> httpSolrClients = new ArrayList<>();
+                    try {
+                        httpSolrClients = getHttpSolrClients((CloudSolrClient) solrClient);
+                        for (HttpSolrClient httpSolrClient : httpSolrClients) {
+                            try {
+                                List<String> cores = getCores(httpSolrClient);
+                                for (String core : cores) {
+                                    SolrScraperConfig pingConfig;
+                                    try {
+                                        pingConfig = config.getPing().clone();
+                                    } catch (CloneNotSupportedException e) {
+                                        logger.error(e.getMessage());
+                                        continue;
+                                    }
+
+                                    pingConfig.getQuery().setCore(core);
+
+                                    SolrScraper scraper = new SolrScraper(httpSolrClient, pingConfig, Arrays.asList("zk_host"), Arrays.asList(((CloudSolrClient) solrClient).getZkHost()));
+                                    Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                                    futureList.add(future);
                                 }
-
-                                pingConfig.getQuery().setCore(core);
-
-                                SolrScraper scraper = new SolrScraper(httpSolrClient, pingConfig);
-                                Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
-                                futureList.add(future);
+                            } catch (SolrServerException | IOException e) {
+                                logger.error(e.getMessage());
                             }
-                        } catch (SolrServerException | IOException e) {
-                            logger.error(e.getMessage());
+                        }
+
+                        // get future
+                        for (Future<Map<String, MetricFamilySamples>> future : futureList) {
+                            try {
+                                Map<String, MetricFamilySamples> m = future.get(60, TimeUnit.SECONDS);
+                                mergeMetrics(metricFamilySamplesMap, m);
+                            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                                logger.error(e.getMessage());
+                            }
+                        }
+                    } catch (SolrServerException | IOException e) {
+                        logger.error(e.getMessage());
+                    } finally {
+                        for (HttpSolrClient httpSolrClient : httpSolrClients) {
+                            try {
+                                httpSolrClient.close();
+                            } catch (IOException e) {
+                                logger.error(e.getMessage());
+                            }
                         }
                     }
 
@@ -147,7 +162,6 @@ public class SolrCollector extends Collector implements Collector.Describable {
                     } catch (SolrServerException | IOException e) {
                         logger.error(e.getMessage());
                     }
-
                 } else {
                     try {
                         List<String> cores = getCores((HttpSolrClient) solrClient);
@@ -171,10 +185,34 @@ public class SolrCollector extends Collector implements Collector.Describable {
             // Metrics
             if (config.getMetrics() != null) {
                 if (solrClient instanceof CloudSolrClient) {
-                    for (HttpSolrClient httpSolrClient : httpSolrClients) {
-                        SolrScraper scraper = new SolrScraper(httpSolrClient, config.getMetrics());
-                        Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
-                        futureList.add(future);
+                    List<HttpSolrClient> httpSolrClients = new ArrayList<>();
+                    try {
+                        httpSolrClients = getHttpSolrClients((CloudSolrClient) solrClient);
+                        for (HttpSolrClient httpSolrClient : httpSolrClients) {
+                            SolrScraper scraper = new SolrScraper(httpSolrClient, config.getMetrics(), Arrays.asList("zk_host"), Arrays.asList(((CloudSolrClient) solrClient).getZkHost()));
+                            Future<Map<String, MetricFamilySamples>> future = executorService.submit(scraper);
+                            futureList.add(future);
+                        }
+
+                        // get future
+                        for (Future<Map<String, MetricFamilySamples>> future : futureList) {
+                            try {
+                                Map<String, MetricFamilySamples> m = future.get(60, TimeUnit.SECONDS);
+                                mergeMetrics(metricFamilySamplesMap, m);
+                            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                                logger.error(e.getMessage());
+                            }
+                        }
+                    } catch (SolrServerException | IOException e) {
+                        logger.error(e.getMessage());
+                    } finally {
+                        for (HttpSolrClient httpSolrClient : httpSolrClients) {
+                            try {
+                                httpSolrClient.close();
+                            } catch (IOException e) {
+                                logger.error(e.getMessage());
+                            }
+                        }
                     }
                 } else {
                     SolrScraper scraper = new SolrScraper(solrClient, config.getMetrics());
@@ -211,14 +249,6 @@ public class SolrCollector extends Collector implements Collector.Describable {
                 }
             }
         } finally {
-            for (HttpSolrClient httpSolrClient : httpSolrClients) {
-                try {
-                    httpSolrClient.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage());
-                }
-            }
-
             executorService.shutdown();
         }
 
@@ -228,7 +258,6 @@ public class SolrCollector extends Collector implements Collector.Describable {
         // add solr metrics
         for (String gaugeMetricName : metricFamilySamplesMap.keySet()) {
             MetricFamilySamples metricFamilySamples = metricFamilySamplesMap.get(gaugeMetricName);
-
             if (metricFamilySamples.samples.size() > 0) {
                 metricFamiliesSamplesList.add(metricFamilySamples);
             }
