@@ -207,6 +207,17 @@ label_values | Label values for the metric. For more details, see [https://prome
 value        | Value for the metric. Value must be set to Double type.
 
 
+## Prometheus Settings
+
+Example `scrape_configs` in `prometheus.yml`:
+
+```yaml
+scrape_configs:
+  - job_name: 'solr'
+    static_configs:
+      - targets: ['localhost:9983']
+```
+
 ## Grafana Dashboard
 
 A Grafana dashboard is provided at the following URL.
