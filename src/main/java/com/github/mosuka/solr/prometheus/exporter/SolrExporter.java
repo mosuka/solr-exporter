@@ -274,7 +274,12 @@ public class SolrExporter {
             Namespace res = parser.parseArgs(args);
 
             int port = res.getInt(ARG_PORT_DEST);
-            String connStr = !res.getString(ARG_BASE_URL_DEST).equals("") ? res.getString(ARG_BASE_URL_DEST) : res.getString(ARG_ZK_HOST_DEST);
+            String connStr = "http://localhost:8983/solr";
+            if (!res.getString(ARG_BASE_URL_DEST).equals("")) {
+                connStr = res.getString(ARG_BASE_URL_DEST);
+            } else if (!res.getString(ARG_ZK_HOST_DEST).equals("")) {
+                connStr = res.getString(ARG_ZK_HOST_DEST);
+            }
             File configFile = new File(res.getString(ARG_CONFIG_DEST));
             int numThreads = res.getInt(ARG_NUM_THREADS_DEST);
 

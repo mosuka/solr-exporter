@@ -17,7 +17,7 @@
 package com.github.mosuka.solr.prometheus.scraper.config;
 
 import com.github.mosuka.solr.prometheus.collector.config.SolrCollectorConfig;
-import junit.framework.TestCase;
+import org.apache.solr.SolrTestCaseJ4;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Unit test for SolrScraperConfig.
  */
-public class SolrScraperConfigTest extends TestCase {
+public class SolrScraperConfigTest extends SolrTestCaseJ4 {
     @Test
     public void testScraperConfig() throws Exception {
         String configFile = "conf/config.yml";
