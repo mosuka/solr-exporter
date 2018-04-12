@@ -1,5 +1,12 @@
 # solr-exporter
 
+## This project is no longer supported due to it had been contributed to Apache Solr.
+Please see following document:
+http://lucene.apache.org/solr/guide/7_3/monitoring-solr-with-prometheus-and-grafana.html
+
+
+---
+
 [Prometheus](https://prometheus.io) exporter for [Apache Solr](http://lucene.apache.org/solr/), written in Java.
 
 ![solr-exporter-diagram](./solr-exporter-diagram.png "solr-exporter-diagram")
